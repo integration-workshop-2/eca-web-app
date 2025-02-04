@@ -1,0 +1,85 @@
+.button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.add {
+    background-color: #007bff;
+    height: 6%;
+    width:250px;
+    color: #fff;
+    
+}
+
+.add:hover {
+    background-color: #0056b3;
+}
+
+.update {
+    background-color: #0088d6;
+    color: #fff;
+}
+
+.update:hover {
+    background-color: #54b9f3;
+}
+
+.delete {
+    background-color: #b81313;
+    color: #fff;
+}
+
+.delete:hover {
+    background-color: #ff0000;
+}
+
+@media (max-width: 768px) {
+    .button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 10px;
+    }
+
+    .add {
+        background-color: #007bff;
+        width:250px;
+        color: #fff;
+        
+    }
+    
+    .add:hover {
+        background-color: #0056b3;
+    }
+    
+    .update {
+        background-color: #0088d6;
+        width: 80%;
+        color: #fff;
+    }
+    
+    .update:hover {
+        background-color: #54b9f3;
+    }
+    
+    .delete {
+        background-color: #b81313;
+        width: 80%;
+        color: #fff;
+    }
+    
+    .delete:hover {
+        background-color: #ff0000;
+    }
+    
+
+}

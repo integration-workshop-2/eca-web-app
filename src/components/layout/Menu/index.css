@@ -1,0 +1,88 @@
+.Menu {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    height: 100vh;
+    background-color: rgb(10,115,181,255);
+    transition: width 0.3s ease;
+    text-decoration: none;
+    align-items: center; 
+    justify-content: center; 
+}
+
+.Menu ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    width: 100%;
+}
+
+.Menu nav {
+    flex-grow: 1;
+    width: 100%; 
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+.Menu li {
+    display: flex;
+}
+
+.Menu li a {
+    padding: 15px 10px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.5rem;
+    width: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+  
+}
+
+.Menu li a:hover {
+    background: #00000030;
+}
+
+
+.hamburger {
+    display: none; 
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .Menu {
+        width: 100%;
+        height: auto; 
+        flex-direction: column; 
+        justify-content: flex-start; 
+    }
+    .Menu ul{
+        gap: 20px;
+    }
+    .Menu li a {
+        font-size: 1.2rem;
+        padding: 10px;
+    }
+
+    .hamburger {
+        display: block; 
+        order: 1;
+    }
+
+    .Menu nav {
+        display: none; 
+    }
+
+    .Menu.open nav {
+        display: block; 
+    }
+}

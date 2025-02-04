@@ -1,0 +1,80 @@
+.filterable-dropdown {
+    position: relative;
+    width: 250px;
+}
+
+.filterable-dropdown input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.dropdown-list {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    width: 108%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 75px;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    z-index: 1000;
+}
+
+.dropdown-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-list li:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-list li:last-child {
+    border-bottom: none;
+}
+
+.no-results {
+    padding: 10px;
+    color: #888;
+    text-align: center;
+}
+
+.table-container {
+    margin: 2rem auto 1rem; /* Ajuste o espaço externo */
+  padding: 5rem; /* Reduzi o padding para otimizar o espaço */
+  max-width: 90%; /* Max largura para tornar o layout responsivo */
+  width: 100%; /* Garante que o contêiner ocupe toda a largura disponível */
+  z-index: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex; /* Permite um layout flexível */
+  flex-direction: row; /* Itens dentro da tabela serão dispostos horizontalmente */
+  gap: 20px; /* Espaçamento entre os itens dentro do contêiner */
+  justify-content: flex-start; /* Alinha os itens no início */
+  align-items: center; /* Alinha os itens verticalmente no centro */
+}
+
+@media (max-width: 768px) {
+.table-container {
+    margin: 4rem auto 1rem;
+    padding: 5rem;
+    max-width: 60%;
+    flex-direction: column; /* Itens dentro da tabela serão dispostos horizontalmente */
+    z-index: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+}
