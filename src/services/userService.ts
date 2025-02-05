@@ -16,13 +16,16 @@ class userService {
     }
   }
 
-   async updateUserName(userId: number, newName: string) {
+   async updatePatientName(userId: string, newName: string) {
     const data: UserUpdateData = { name: newName };
 
     try {
-      const response = await api.put(`/users/${userId}`, data, {
+      const response = await api.put(`/patients/${userId}`, data, {
         headers: {
           'Content-Type': 'application/json',
+        },
+        params:{
+          name: newName,
         },
       });
       return response.data;
@@ -32,10 +35,10 @@ class userService {
     }
   }
 
-  async deleteUser(userId: number) {
+  async deletePatient(userId: string) {
 
     try {
-      const response = await api.put(`/delete/${userId}`, {
+      const response = await api.delete(`/patients/${userId}`, {
         headers: {
           'Content-Type': 'application/json',
         },

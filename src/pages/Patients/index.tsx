@@ -7,7 +7,7 @@ import PopupDelete from "../../components/layout/Miscellaneus/PopupDelete";
 import userService from "../../services/userService";
 
 interface User {
-    id: number;
+    id: string;
     name: string;
     email: string;
 }
@@ -46,31 +46,27 @@ const Patients: React.FC = () => {
         setIsDeleting(true);
     };
 
-    const handleUpdateName = async (userId: number, newName: string) => {
+    const handleUpdateName = async (userId: string, newName: string) => {
         setIsUpdating(true);
         try {
-            await userService.updateUserName(userId, newName);
+            await userService.updatePatientName(userId, newName);
 
         } catch (error) {
             console.error('Erro ao atualizar o nome:', error);
         } finally {
-            setData((prevData) =>
-                prevData.map((user) =>
-                    user.id === userId ? { ...user, name: newName } : user
-                )
-            );
+            alert("Dados do paciente atualizados com sucesso!");
             setIsUpdating(false);
         }
     };
 
-    const handleDeleteUser = async (userId: number) => {
+    const handleDeleteUser = async (userId: string) => {
         setIsUpdating(true);  
         try {
-            await userService.deleteUser(userId);  
-            setData((prevData) => prevData.filter((user) => user.id !== userId)); 
+            await userService.deletePatient(userId);  
         } catch (error) {
             console.error('Erro ao deletar o usuário:', error);  
         } finally {
+            alert("O paciente foi excluído!")
             setIsUpdating(false);  
         }
     };

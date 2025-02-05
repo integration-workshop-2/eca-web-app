@@ -37,7 +37,6 @@ const TableHome: React.FC<TableHomeProps> = ({ columns, data }) => {
                     {columns.map((column, index) => (
                         <th key={index}>{column.header}</th>
                     ))}
-                    <th className="buttonoptions">Ações</th>
                 </tr>
                 <tr>
                     {columns.map((column, index) => (
@@ -52,7 +51,6 @@ const TableHome: React.FC<TableHomeProps> = ({ columns, data }) => {
                             />
                         </td>
                     ))}
-                    <td className="buttonoptions"></td> 
                 </tr>
             </thead>
             <tbody>

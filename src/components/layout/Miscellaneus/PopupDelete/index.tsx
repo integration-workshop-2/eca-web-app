@@ -3,7 +3,7 @@ import Button from "../Buttons"
 import "./index.css"; 
 
 interface PopupDeleteProps {
-    userId: number; 
+    userId: string; 
     userName: string; 
     onClose: () => void;
     onDelete: () => void; 

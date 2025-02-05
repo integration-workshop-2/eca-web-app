@@ -49,14 +49,14 @@ const Home: React.FC = () => {
         <LineChartComponent />
       </div>
       <div className="table-container">
-        <p>Últimos alarmes:</p>
+        
         <TableHome
           columns={columnsMedicine}
           data={dataMedicine}
         />
       </div>
       <div className="table-container">
-        <p>Pacientes não reconhecidos:</p>
+       
         <TableHome
           columns={columnsNonRecognized}
           data={dataNonRecognized}
