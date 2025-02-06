@@ -1,10 +1,6 @@
 import api from './api';
 
-interface UserUpdateData {
-    name: string;
-  }
-  
-class userService {
+class patientService {
   async all() {
     try {
       const response = await api.get('/patients');
@@ -15,20 +11,30 @@ class userService {
       return [];
     }
   }
-
-   async updatePatientName(userId: string, newName: string) {
-    const data: UserUpdateData = { name: newName };
-
+  async createPatient(name: string) {
     try {
-      const response = await api.put(`/patients/${userId}`, data, {
+      const response = await api.post('/patients', { name: name }, {
         headers: {
           'Content-Type': 'application/json',
-        },
-        params:{
-          name: newName,
-        },
+        }
       });
-      return response.data;
+      return response.data.data;
+    } catch (error) {
+      console.log('Erro ao adicionar um novo usuário.');
+      throw error;
+    }
+  }
+
+  async updatePatientName(userId: string, newName: string) {
+
+    try {
+      const response = await api.put(`/patients/${userId}`, { name: newName }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+
+      });
+      return response.data.data;
     } catch (error) {
       console.error('Erro ao atualizar nome do usuário:', error);
       throw error;
@@ -49,7 +55,7 @@ class userService {
       throw error;
     }
   }
-  
+
 }
 
-export default new userService();
+export default new patientService();

@@ -7,6 +7,10 @@ interface DataPoint {
   pv: number;
   amt: number;
 }
+interface patientSelected {
+  id: number;
+  name: string;
+}
 
 const data: DataPoint[] = [
   { name: 'Jan', uv: 4000, pv: 2400, amt: 2400 },
@@ -18,9 +22,12 @@ const data: DataPoint[] = [
   { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
 ];
 
-const LineChartComponent: React.FC = () => {
+const LineChartComponent: React.FC<patientSelected> = ({id, name}) => {
   return (
+    <>
+      <p>{id} {name}</p>
     <ResponsiveContainer width="100%" height={250}>
+    
       <LineChart
         data={data}
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -34,6 +41,7 @@ const LineChartComponent: React.FC = () => {
         <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
       </LineChart>
     </ResponsiveContainer>
+    </>
   );
 };
 

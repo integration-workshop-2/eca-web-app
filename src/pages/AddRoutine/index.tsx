@@ -65,21 +65,21 @@ const AddRoutine: React.FC = () => {
                     options={medications}
                     onSelect={handleSelect}
                     placeholder="Pesquisar pacientes..."
-                    displayField="name" // Nome da propriedade usada na exibição
+                    displayField="name" 
                 />
                 <p>Dias da semana</p>
                 <FilterableDropdown
                     options={medications}
                     onSelect={handleSelect}
                     placeholder="Pesquisar dias da semana..."
-                    displayField="name" // Nome da propriedade usada na exibição
+                    displayField="name" 
                 />
                 <p>Medicamentos</p>
                 <FilterableDropdown
                     options={medications}
                     onSelect={handleSelect}
                     placeholder="Pesquisar medicamentos..."
-                    displayField="name" // Nome da propriedade usada na exibição
+                    displayField="name" 
                 />
             </div>
             <div className="table-container">

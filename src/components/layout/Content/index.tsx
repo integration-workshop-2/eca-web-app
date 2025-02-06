@@ -6,6 +6,7 @@ import Patients from "../../../pages/Patients";
 import Dispenser from "../../../pages/Dispenser";
 import AddRoutine from "../../../pages/AddRoutine";
 import Settings from "../../../pages/Settings";
+import AddPatient from "../../../pages/AddPatient";
 
 const Content: React.FC = () => {
     return (
@@ -16,6 +17,7 @@ const Content: React.FC = () => {
                 <Route path="/dispenser" element={<Dispenser />} />
                 <Route path="/addroutine" element={<AddRoutine />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/addPatients" element={<AddPatient />} />
             </Routes>
         </main>
     );

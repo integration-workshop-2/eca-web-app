@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
 interface FilterableDropdownProps<T> {
-  options: T[]; // Lista de opções (pode ser qualquer tipo)
-  onSelect: (item: T) => void; // Callback para selecionar um item
-  placeholder?: string; // Placeholder personalizado (opcional)
-  displayField?: keyof T; // Nome da propriedade para exibir (caso seja um objeto)
+  options: T[]; 
+  onSelect: (item: T) => void; 
+  placeholder?: string; 
+  displayField?: keyof T; 
 }
 
 const FilterableDropdown = <T,>({
@@ -13,10 +13,10 @@ const FilterableDropdown = <T,>({
   placeholder = "Digite algo...",
   displayField,
 }: FilterableDropdownProps<T>) => {
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Texto digitado pelo usuário
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false); // Estado do dropdown
+  const [searchTerm, setSearchTerm] = useState<string>(""); 
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false); 
 
-  // Filtra as opções com base no texto digitado
+
   const filteredOptions = options.filter((option) => {
     const text = displayField
       ? String(option[displayField]).toLowerCase()
@@ -26,7 +26,6 @@ const FilterableDropdown = <T,>({
 
   return (
     <div className="filterable-dropdown">
-      {/* Campo de texto */}
       <input
         type="text"
         placeholder={placeholder}
@@ -38,7 +37,6 @@ const FilterableDropdown = <T,>({
         onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
       />
 
-      {/* Dropdown */}
       {isDropdownOpen && (
         <ul className="dropdown-list">
           {filteredOptions.length > 0 ? (
@@ -46,12 +44,12 @@ const FilterableDropdown = <T,>({
               <li
                 key={index}
                 onClick={() => {
-                  onSelect(option); // Retorna o item selecionado
+                  onSelect(option); 
                   setSearchTerm(
                     displayField
                       ? String(option[displayField])
                       : String(option)
-                  ); // Atualiza o campo de texto com o valor selecionado
+                  );
                   setIsDropdownOpen(false);
                 }}
               >

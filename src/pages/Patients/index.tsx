@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Table from "../../components/layout/Table";
 import "./index.css";
 import Button from "../../components/layout/Miscellaneus/Buttons";
 import PopupUpdate from "../../components/layout/Miscellaneus/PopupUpdate";
 import PopupDelete from "../../components/layout/Miscellaneus/PopupDelete";
-import userService from "../../services/userService";
+import patientService from "../../services/patientService";
 
 interface User {
     id: string;
@@ -13,22 +14,26 @@ interface User {
 }
 
 const Patients: React.FC = () => {
+    const navigate = useNavigate();
+
     const columns = [
         { header: "Nome", accessor: "name" }
     ];
 
     const [data, setData] = useState<User[]>([]);
     useEffect(() => {
-        async function fetchUsers() {
-            try {
-                const users = await userService.all();
-                setData(users);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        fetchUsers();
+        fetchPatients();
     }, []);
+
+
+    const fetchPatients = async () => {
+        try {
+            const users = await patientService.all();
+            setData(users);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
@@ -49,31 +54,33 @@ const Patients: React.FC = () => {
     const handleUpdateName = async (userId: string, newName: string) => {
         setIsUpdating(true);
         try {
-            await userService.updatePatientName(userId, newName);
+            await patientService.updatePatientName(userId, newName);
 
         } catch (error) {
             console.error('Erro ao atualizar o nome:', error);
         } finally {
-            alert("Dados do paciente atualizados com sucesso!");
             setIsUpdating(false);
+            fetchPatients();
+            alert("Dados do paciente atualizados com sucesso!");
         }
     };
 
     const handleDeleteUser = async (userId: string) => {
-        setIsUpdating(true);  
+        setIsDeleting(true);  
         try {
-            await userService.deletePatient(userId);  
+            await patientService.deletePatient(userId);  
         } catch (error) {
             console.error('Erro ao deletar o usuário:', error);  
         } finally {
+            setIsDeleting(false);  
+            fetchPatients();
             alert("O paciente foi excluído!")
-            setIsUpdating(false);  
         }
     };
     
     return (
         <div className="Home">
-            <Button onClick={() => setIsUpdating(true)} className="add">
+            <Button onClick={() => navigate("/addPatients")} className="add">
                 Adicionar Paciente
             </Button>
 
@@ -84,8 +91,7 @@ const Patients: React.FC = () => {
                     fields={[{ key: "name", label: "Nome do Paciente" }]} 
                     onClose={() => setIsUpdating(false)}
                     onUpdate={(updatedUser) => {
-                        console.log("Atualizar paciente:", updatedUser);
-                        //handleUpdateName(updatedUser);
+                        handleUpdateName(selectedUser.id, updatedUser.name);
                     }}
                 />
             )}
