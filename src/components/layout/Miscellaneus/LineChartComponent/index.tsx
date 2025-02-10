@@ -8,7 +8,7 @@ interface DataPoint {
   amt: number;
 }
 interface patientSelected {
-  id: number;
+  id: string;
   name: string;
 }
 

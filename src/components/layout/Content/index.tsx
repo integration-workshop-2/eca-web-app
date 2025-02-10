@@ -7,17 +7,21 @@ import Dispenser from "../../../pages/Dispenser";
 import AddRoutine from "../../../pages/AddRoutine";
 import Settings from "../../../pages/Settings";
 import AddPatient from "../../../pages/AddPatient";
+import { useAuth } from '../../../hooks/useAuth';
+import { PrivateRoute } from '../PrivateRoute';
+import Login from '../../../pages/Login';
 
 const Content: React.FC = () => {
     return (
         <main className="Content">
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/patients" element={<Patients />} />
-                <Route path="/dispenser" element={<Dispenser />} />
-                <Route path="/addroutine" element={<AddRoutine />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/addPatients" element={<AddPatient />} />
+                <Route path="/patients" element={<PrivateRoute><Patients /></PrivateRoute>} />
+                <Route path="/dispenser" element={<PrivateRoute><Dispenser /></PrivateRoute>} />
+                <Route path="/addroutine" element={<PrivateRoute><AddRoutine /></PrivateRoute>} />
+                <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+                <Route path="/addPatients" element={<PrivateRoute><AddPatient /></PrivateRoute>} />
+                <Route path="/login" element={<Login />} />
             </Routes>
         </main>
     );

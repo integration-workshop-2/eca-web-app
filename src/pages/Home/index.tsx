@@ -3,65 +3,102 @@ import LineChartComponent from "../../components/layout/Miscellaneus/LineChartCo
 import TableHome from "../../components/layout/TableHome";
 import nonRecognizedPatientService from "../../services/nonRecognizedPatientService";
 import FilterableDropdown from "../../components/layout/Miscellaneus/FilterableDropdown";
-
-interface Medicine {
-  id: number;
-  medicine: string;
-  cylinder: string;
-}
+import alarmService from "../../services/alarmService";
+import patientService from "../../services/patientService";
 
 interface NonRecognized {
-  patientId: string;
-  createdAt: string;
+  patient_id: string;
+  created_at: string;
 }
 
 interface PatientSelected {
-  id: number;
+  id: string;
   name: string;
+}
+interface patientParameters {
+  patient_name: string;
+  bpm: string;
+  oxygenation_percentage: string;
+  date: string;
+}
+
+interface Patient {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const Home: React.FC = () => {
   const [patientSelected, setPatientSelected] = useState<PatientSelected | null>(null);
 
-  const columnsMedicine = [
-    { header: "Remédio", accessor: "medicine" },
-    { header: "Cilindro", accessor: "cylinder" }
-  ];
-
-  const [dataMedicine, setDataMedicine] = useState<Medicine[]>([
-    { id: 1, medicine: "Paracetamol", cylinder: "1" },
-    { id: 2, medicine: "Tadalafila", cylinder: "2" },
-  ]);
-
-  const columnsNonRecognized = [
-    { header: "Paciente", accessor: "patient" },
+  const patientParameterColumns = [
+    { header: "Paciente", accessor: "patient_name" },
+    { header: "BPM", accessor: "bpm" },
+    { header: "Oxigenação (%)", accessor: "oxygenation_percentage" },
     { header: "Data", accessor: "date" }
   ];
 
-  const patientsName = [
-    { id: 1, name: "Nome1" },
-    { id: 2, name: "Nome2" },
-    { id: 3, name: "Nome3" },
+  const [dataPatientParameters, setDataPatientParameters] = useState<patientParameters[]>([]);
+
+  const columnsNonRecognized = [
+    { header: "Paciente", accessor: "patientName" },
+    { header: "Data", accessor: "created_at" }
   ];
 
+  const [dataNonRecognized, setNonRecognized] = useState<NonRecognized[]>([]);
+  const [dataPatient, setPatientName] = useState<Patient[]>([]);
   const handleSelect = (item: PatientSelected) => {
     setPatientSelected(item);
   };
 
-  const [dataNonRecognized, setNonRecognized] = useState<NonRecognized[]>([]);
-
   useEffect(() => {
     const fetchNonRecognized = async () => {
       try {
-        const nrec = await nonRecognizedPatientService.all();
-        setNonRecognized(nrec);
+        const nrec: NonRecognized[] = await nonRecognizedPatientService.all(); 
+        const filteredData = nrec.filter((item: NonRecognized) => item.patient_id !== null && item.patient_id !== undefined);
+        setNonRecognized(filteredData);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       }
     };
 
+    const fetchDataPatientParameters = async () => {
+      try {
+        const nrec = await alarmService.all();
+        setDataPatientParameters(nrec);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    const fetchPatientName = async () => {
+      try {
+        const name = await patientService.all();
+        setPatientName(name);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    }
+    fetchPatientName();
     fetchNonRecognized();
+    fetchDataPatientParameters();
+
   }, []);
+
+  const dataNonRecognizedWithPatientName = dataNonRecognized.map((item) => {
+    const patient = dataPatient.find((p) => p.id === item.patient_id);
+    return {
+      ...item,
+      patientName: patient ? patient.name : "Desconhecido",
+    };
+  });
+
+
+  const patientsName = dataPatient.map((patient) => ({
+    id: patient.id,
+    name: patient.name
+  }));
 
   return (
     <>
@@ -79,10 +116,10 @@ const Home: React.FC = () => {
         />
       </div>
       <div className="table-container">
-        <TableHome columns={columnsMedicine} data={dataMedicine} />
+        <TableHome columns={patientParameterColumns} data={dataPatientParameters} />
       </div>
       <div className="table-container">
-        <TableHome columns={columnsNonRecognized} data={dataNonRecognized} />
+        <TableHome columns={columnsNonRecognized} data={dataNonRecognizedWithPatientName} />
       </div>
     </>
   );

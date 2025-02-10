@@ -1,10 +1,19 @@
 import React from "react";
-import './index.css';
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
-export default function Settings(){
-    return (
-        <div>
-            <h3>Teste</h3>
-        </div>
-    );
-}
+const Settings: React.FC = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogoff = () => {
+    logout(); 
+    navigate("/login"); 
+  };
+
+  return (
+    <button onClick={handleLogoff}>Sair</button>
+  );
+};
+
+export default Settings;
