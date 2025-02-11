@@ -20,45 +20,34 @@
     width: 50vh;
 }
 
-.popup-content input {
-    width: 100%;
-    padding: 10px;
-    margin: 20px -100px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
 .popup-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
 }
 
-.popup-fields {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
+.popup-buttons .button {
+    margin: 0px;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
-    width: 60%;
+    align-items: flex-start;
 }
 
 .input-group label {
     font-weight: bold;
-    margin-bottom: 5px;
     text-align: left;
+    margin-bottom: 5px;
 }
 
 .input-group input {
-    padding: 8px;
+    width: 46.5vh;
+    padding: 10px;
+    margin: 5px 0px 15px 0px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
-    width: 50%;
 }
 
 .input-group select {

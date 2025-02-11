@@ -25,6 +25,7 @@ export default function Menu() {
                             aria-label="Home"
                             onClick={() => setIsOpen(false)}
                         >
+                            <span className="material-icons">home</span>
                             Home
                         </Link>
                     </li>
@@ -34,6 +35,7 @@ export default function Menu() {
                             aria-label="Pacientes"
                             onClick={() => setIsOpen(false)}
                         >
+                            <span className="material-icons">groups</span>
                             Pacientes
                         </Link>
                     </li>
@@ -43,6 +45,7 @@ export default function Menu() {
                             aria-label="Dispenser"
                             onClick={() => setIsOpen(false)}
                         >
+                            <span className="material-icons">medication</span>
                             Dispenser
                         </Link>
                     </li>
@@ -52,23 +55,24 @@ export default function Menu() {
                             aria-label="Configurações"
                             onClick={() => setIsOpen(false)}
                         >
+                            <span className="material-icons">settings</span>
                             Configurações
                         </Link>
                     </li>
+                    {localStorage.getItem("authPassword") && (
+                        <li className="logout-btn">
+                            <Link
+                                to="" 
+                                aria-label="Sair"
+                                onClick={isLogout}
+                            >
+                                <span className="material-icons">exit_to_app</span>
+                                Sair
+                            </Link>
+                        </li>
+                    )}
                 </ul>
             </nav>
-
-            {localStorage.getItem("authPassword") && (
-                <li>
-                    <Link
-                        to="" 
-                        aria-label="Sair"
-                        onClick={isLogout} 
-                    >
-                        Sair
-                    </Link>
-                </li>
-            )}
 
             <button className="hamburger" onClick={() => setIsOpen(!isOpen)}>
                 <span className="material-icons">menu</span>
