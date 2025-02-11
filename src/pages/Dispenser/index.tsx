@@ -5,17 +5,12 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 import MedicineService from "../../services/medicineService";
 import PopupUpdate from "../../components/layout/Miscellaneus/PopupUpdate";
-
+import PopupDelete from "../../components/layout/Miscellaneus/PopupDelete";
+import routineService from "../../services/routineService";
 interface Medicine {
     id: string;
     name: string;
     cylinder_number: number;
-}
-
-interface FormattedMedicine {
-    id: string;
-    medicine: string;
-    cylinder: string;
 }
 
 interface Routine {
@@ -25,16 +20,17 @@ interface Routine {
 }
 
 const Dispenser: React.FC = () => {
-
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const handleNavigate = () => {
-      navigate("/addroutine");
+        navigate("/addroutine");
     };
 
     const columnsMedicine = [
-        { header: "Remédio", accessor: "medicine" },
-        { header: "Cilindro", accessor: "cylinder" }
+        { header: "Remédio", accessor: "name" },
+        { header: "Cilindro", accessor: "cylinder_number" }
     ];
 
     const columnsRoutine = [
@@ -42,45 +38,44 @@ const Dispenser: React.FC = () => {
         { header: "Descrição da rotina", accessor: "routine" }
     ];
 
-    const [dataMedicine, setDataMedicine] = useState<FormattedMedicine[]>([]);
+    const [dataMedicine, setDataMedicine] = useState<Medicine[]>([]);
+    const [dataRoutine, setDataRoutine] = useState<Routine[]>([]);
     useEffect(() => {
         async function fetchMedicine() {
             try {
-                const medicineData: Medicine[] = await MedicineService.all();
-                const formattedMedicine: FormattedMedicine[] = medicineData.map((item) => ({
-                    id: item.id,
-                    medicine: item.name, 
-                    cylinder: item.cylinder_number.toString(),
-                }));
-                setDataMedicine(formattedMedicine);
+                const medicineData = await MedicineService.all();
+        
+                setDataMedicine(medicineData);
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching medicines:", error); 
             }
         }
+
+        async function fetchDataRoutine() {
+            try {
+                const routineData: Routine[] = await routineService.all(); 
+                setDataRoutine(routineData);
+            } catch (error) {
+                console.error("Error fetching routines:", error);
+            }
+        }
+
         fetchMedicine();
+        fetchDataRoutine();
     }, []);
-    
 
 
-    const [dataRoutine, setDataRoutine] = useState<Routine[]>([
-        { id: 1, patientName: "Lucas Marques", routine: ["Seg 13:00 Paracetamol 1 comp.", "Ter 15:00 Codeína 2 comps."] },
-        { id: 2, patientName: "João Henrique Soares", routine: ["Qua 13:00 Paracetamol 1 comp.", "Qui 15:00 Codeína 2 comps."] },
-    ]);
-
-    const [isUpdating, setIsUpdating] = useState<boolean>(false);
-    const [isDeleting, setIsDeleting] = useState<boolean>(false);
-
-    const [selectedMedicine, setSelectedMedicine] = useState<FormattedMedicine | null>(null);
+    const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
     const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
 
     const handleUpdateMedicine = (row: Record<string, any>) => {
-        const medicine = row as FormattedMedicine;
+        const medicine = row as Medicine;
         setSelectedMedicine(medicine);
         setIsUpdating(true);
     };
-    
+
     const handleDeleteMedicine = (row: Record<string, any>) => {
-        const medicine = row as FormattedMedicine;
+        const medicine = row as Medicine;
         setSelectedMedicine(medicine);
         setIsDeleting(true);
 
@@ -108,7 +103,7 @@ const Dispenser: React.FC = () => {
                 Adicionar Rotina
             </Button>
 
-    
+
 
             <div className="table-container">
                 <Table
@@ -127,6 +122,20 @@ const Dispenser: React.FC = () => {
                     onDelete={handleDeletePatient}
                 />
             </div>
+            {isUpdating && (
+            <PopupUpdate
+                item={{ nome: "Carlos", status: "Ativo" }}
+                title="Editar medicamento"
+                image="logo192.png"
+                fields={[
+                    { key: "nome", label: "Nome", type: "text" },
+                    { key: "status", label: "Cilindro", type: "select", options: ["1", "2", "3"] }
+                ]}
+                onClose={() => setIsUpdating(false)}
+                onUpdate={(updatedItem) => console.log("Atualizado:", updatedItem)}
+            />
+            )}
+           
 
         </>
     );

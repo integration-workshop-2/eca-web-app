@@ -60,3 +60,29 @@
     font-size: 16px;
     width: 50%;
 }
+
+.input-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    background-color: white;
+    cursor: pointer;
+}
+
+.input-group select option {
+    font-size: 16px;
+    padding: 10px;
+}
+
+.input-group select:hover {
+    border-color: #888;
+}
+
+.popup-image {
+    width: 100px;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+}
