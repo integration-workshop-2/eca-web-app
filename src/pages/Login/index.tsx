@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import "./index.css";
 
 export default function Login() {
   const [password, setPassword] = useState("");
@@ -17,8 +18,8 @@ export default function Login() {
     }
   };
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="table-container login-form">
+      <span>Login</span>
       <form onSubmit={handleSubmit}>
         <input
           type="password"
@@ -26,7 +27,7 @@ export default function Login() {
           value={password}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
         />
-        <button type="submit">Entrar</button>
+        <button type="submit" className="button update">Entrar</button>
       </form>
     </div>
   );

@@ -10,6 +10,7 @@ import AddPatient from "../../../pages/AddPatient";
 import { useAuth } from '../../../hooks/useAuth';
 import { PrivateRoute } from '../PrivateRoute';
 import Login from '../../../pages/Login';
+import AddMedicine from "../../../pages/AddMedicine";
 
 const Content: React.FC = () => {
     return (
@@ -19,6 +20,7 @@ const Content: React.FC = () => {
                 <Route path="/patients" element={<PrivateRoute><Patients /></PrivateRoute>} />
                 <Route path="/dispenser" element={<PrivateRoute><Dispenser /></PrivateRoute>} />
                 <Route path="/addroutine" element={<PrivateRoute><AddRoutine /></PrivateRoute>} />
+                <Route path="/addmedicine" element={<PrivateRoute><AddMedicine /></PrivateRoute>} />
                 <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
                 <Route path="/addPatients" element={<PrivateRoute><AddPatient /></PrivateRoute>} />
                 <Route path="/login" element={<Login />} />

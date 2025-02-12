@@ -1,0 +1,24 @@
+.addMedicineForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.addMedicineForm .input-group {
+    margin-bottom: 1vh;
+}
+
+.addMedicineForm .input-group select {
+    width: 23.5vw;
+    margin-top: 5px;
+}
+
+.addMedicineForm .button-group {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 2.5vh;
+}
+
+.addMedicineForm .button-group button:first-child {
+    margin-left: 0;
+}
