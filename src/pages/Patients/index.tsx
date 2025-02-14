@@ -66,18 +66,18 @@ const Patients: React.FC = () => {
     };
 
     const handleDeleteUser = async (userId: string) => {
-        setIsDeleting(true);  
+        setIsDeleting(true);
         try {
-            await patientService.deletePatient(userId);  
+            await patientService.deletePatient(userId);
         } catch (error) {
-            console.error('Erro ao deletar o usuário:', error);  
+            console.error('Erro ao deletar o usuário:', error);
         } finally {
-            setIsDeleting(false);  
+            setIsDeleting(false);
             fetchPatients();
             alert("O paciente foi excluído!")
         }
     };
-    
+
     return (
         <div className="Home">
             <Button onClick={() => navigate("/addPatients")} className="add">
@@ -86,9 +86,9 @@ const Patients: React.FC = () => {
 
             {isUpdating && selectedUser && (
                 <PopupUpdate
-                    item={selectedUser} 
+                    item={selectedUser}
                     title="Atualizar Paciente"
-                    fields={[{ key: "name", label: "Nome do Paciente" }]} 
+                    fields={[{ key: "name", label: "Nome do Paciente" }]}
                     onClose={() => setIsUpdating(false)}
                     onUpdate={(updatedUser) => {
                         handleUpdateName(selectedUser.id, updatedUser.name);

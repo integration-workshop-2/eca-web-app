@@ -37,7 +37,6 @@ export default function AddPatient() {
             <Button onClick={() => navigate('/patients')} className="delete">
                 Cancelar
             </Button>
-
         </>
     );
 }
