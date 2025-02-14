@@ -24,8 +24,12 @@ const Dispenser: React.FC = () => {
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const navigate = useNavigate();
 
-    const handleNavigate = () => {
+    const handleNavigateToAddRoutine = () => {
         navigate("/addroutine");
+    };
+
+    const handleNavigateToAddMedicine = () => {
+        navigate("/addmedicine");
     };
 
     const columnsMedicine = [
@@ -44,16 +48,16 @@ const Dispenser: React.FC = () => {
         async function fetchMedicine() {
             try {
                 const medicineData = await MedicineService.all();
-        
+
                 setDataMedicine(medicineData);
             } catch (error) {
-                console.error("Error fetching medicines:", error); 
+                console.error("Error fetching medicines:", error);
             }
         }
 
         async function fetchDataRoutine() {
             try {
-                const routineData: Routine[] = await routineService.all(); 
+                const routineData: Routine[] = await routineService.all();
                 setDataRoutine(routineData);
             } catch (error) {
                 console.error("Error fetching routines:", error);
@@ -96,10 +100,10 @@ const Dispenser: React.FC = () => {
 
     return (
         <>
-            <Button onClick={() => handleNavigate()} className="add">
+            <Button onClick={() => handleNavigateToAddMedicine()} className="add">
                 Adicionar Remédio
             </Button>
-            <Button onClick={() => handleNavigate()} className="add">
+            <Button onClick={() => handleNavigateToAddRoutine()} className="add">
                 Adicionar Rotina
             </Button>
 
@@ -123,19 +127,19 @@ const Dispenser: React.FC = () => {
                 />
             </div>
             {isUpdating && (
-            <PopupUpdate
-                item={{ nome: "Carlos", status: "Ativo" }}
-                title="Editar medicamento"
-                image="logo192.png"
-                fields={[
-                    { key: "nome", label: "Nome", type: "text" },
-                    { key: "status", label: "Cilindro", type: "select", options: ["1", "2", "3"] }
-                ]}
-                onClose={() => setIsUpdating(false)}
-                onUpdate={(updatedItem) => console.log("Atualizado:", updatedItem)}
-            />
+                <PopupUpdate
+                    item={{ nome: "Carlos", status: "Ativo" }}
+                    title="Editar medicamento"
+                    image="logo192.png"
+                    fields={[
+                        { key: "nome", label: "Nome", type: "text" },
+                        { key: "status", label: "Cilindro", type: "select", options: ["1", "2", "3"] }
+                    ]}
+                    onClose={() => setIsUpdating(false)}
+                    onUpdate={(updatedItem) => console.log("Atualizado:", updatedItem)}
+                />
             )}
-           
+
 
         </>
     );
