@@ -1,16 +1,50 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/layout/Miscellaneus/Buttons";
 import TextBox from "../../components/layout/Miscellaneus/TextBox";
-// import { Label } from "recharts";
+import Dropdown from "../../components/layout/Miscellaneus/Dropdown";
 import "./index.css";
+import medicineService from "../../services/medicineService";
 
 export default function AddMedicine() {
     const [name, setName] = useState("");
+    const [cylinders, setCylinders] = useState<{ id: number; label: string }[]>([]);
+    const [selectedCylinder, setSelectedCylinder] = useState(0);
     const navigate = useNavigate();
 
-    const handleCreateMedicine = async (name: string) => {
+    useEffect(() => {
+        const fetchAvailableCylinders = async () => {
+            try {
+                const response = await medicineService.listAvailableCylinders();
+                console.log(response);
+                const availableCylinders = response.available_cylinders;
 
+                setCylinders(availableCylinders.map((cyl: number) => ({ id: cyl, label: `Cilindro ${cyl}` })));
+            } catch (error) {
+                console.error("Erro ao listar cilindros disponíveis:", error);
+            }
+        };
+
+        fetchAvailableCylinders();
+    }, []);
+
+    const handleCreateMedicine = async () => {
+        if (!name || selectedCylinder === null) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+        if (selectedCylinder === 0) {
+            alert("Por favor, selecione um cilindro.");
+            return;
+        }
+
+        try {
+            await medicineService.createMedicine(name, selectedCylinder);
+            alert("Dados criados com sucesso!");
+            navigate("/dispenser");
+        } catch (error) {
+            console.error("Erro ao criar medicamento:", error);
+        }
     };
 
     return (
@@ -23,27 +57,33 @@ export default function AddMedicine() {
                             value={name}
                             placeholder="Nome do remédio"
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                            />
+                        />
                     </div>
 
-                    <div className="input-group">        
+                    <div className="input-group">
                         <label>Cilindro</label>
-                        <select>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                        <select
+                            value={selectedCylinder}
+                            onChange={(e) => setSelectedCylinder(Number(e.target.value))}
+                        >
+                            <option value={0}>Selecione o cilindro</option>
+                            {cylinders.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                    {c.label}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
 
-                <img src="logo512.png" height={250} width={250}/>
+                <img src="logo512.png" height={250} width={250} />
 
                 <div className="button-group">
-                    <Button onClick={() => handleCreateMedicine(name)} className="update">
+                    <Button onClick={handleCreateMedicine} className="create">
                         Adicionar Remédio
                     </Button>
 
-                    <Button onClick={() => navigate('/dispenser')} className="delete">
+                    <Button onClick={() => navigate("/dispenser")} className="delete">
                         Cancelar
                     </Button>
                 </div>
