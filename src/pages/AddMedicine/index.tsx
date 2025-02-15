@@ -9,7 +9,7 @@ import medicineService from "../../services/medicineService";
 export default function AddMedicine() {
     const [name, setName] = useState("");
     const [cylinders, setCylinders] = useState<{ id: number; label: string }[]>([]);
-    const [selectedCylinder, setSelectedCylinder] = useState<number | null>(null);
+    const [selectedCylinder, setSelectedCylinder] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,6 +31,10 @@ export default function AddMedicine() {
     const handleCreateMedicine = async () => {
         if (!name || selectedCylinder === null) {
             alert("Por favor, preencha todos os campos.");
+            return;
+        }
+        if (selectedCylinder === 0) {
+            alert("Por favor, selecione um cilindro.");
             return;
         }
 
@@ -58,12 +62,17 @@ export default function AddMedicine() {
 
                     <div className="input-group">
                         <label>Cilindro</label>
-                        <Dropdown
-                            options={cylinders}
-                            onSelect={(item) => setSelectedCylinder(item.id)}
-                            placeholder="Selecione um cilindro"
-                            displayField="label"
-                        />
+                        <select
+                            value={selectedCylinder}
+                            onChange={(e) => setSelectedCylinder(Number(e.target.value))}
+                        >
+                            <option value={0}>Selecione o cilindro</option>
+                            {cylinders.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                    {c.label}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 

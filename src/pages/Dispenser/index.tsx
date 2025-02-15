@@ -7,6 +7,7 @@ import MedicineService from "../../services/medicineService";
 import PopupUpdate from "../../components/layout/Miscellaneus/PopupUpdate";
 import PopupDelete from "../../components/layout/Miscellaneus/PopupDelete";
 import routineService from "../../services/routineService";
+import medicineService from "../../services/medicineService";
 interface Medicine {
     id: string;
     name: string;
@@ -31,7 +32,6 @@ const Dispenser: React.FC = () => {
     const handleNavigateToAddMedicine = () => {
         navigate("/addmedicine");
     };
-
     const columnsMedicine = [
         { header: "Remédio", accessor: "name" },
         { header: "Cilindro", accessor: "cylinder_number" }
@@ -45,56 +45,67 @@ const Dispenser: React.FC = () => {
     const [dataMedicine, setDataMedicine] = useState<Medicine[]>([]);
     const [dataRoutine, setDataRoutine] = useState<Routine[]>([]);
     useEffect(() => {
-        async function fetchMedicine() {
-            try {
-                const medicineData = await MedicineService.all();
-
-                setDataMedicine(medicineData);
-            } catch (error) {
-                console.error("Error fetching medicines:", error);
-            }
-        }
-
-        async function fetchDataRoutine() {
-            try {
-                const routineData: Routine[] = await routineService.all();
-                setDataRoutine(routineData);
-            } catch (error) {
-                console.error("Error fetching routines:", error);
-            }
-        }
-
         fetchMedicine();
         fetchDataRoutine();
     }, []);
 
+    const fetchMedicine = async () => {
+        try {
+            const medicineData = await MedicineService.all();
+
+            setDataMedicine(medicineData);
+        } catch (error) {
+            console.error("Error fetching medicines:", error);
+        }
+    }
+
+    const fetchDataRoutine = async () => {
+        try {
+            const routineData: Routine[] = await routineService.all();
+            setDataRoutine(routineData);
+        } catch (error) {
+            console.error("Error fetching routines:", error);
+        }
+    }
 
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
     const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
 
-    const handleUpdateMedicine = (row: Record<string, any>) => {
-        const medicine = row as Medicine;
-        setSelectedMedicine(medicine);
+    const handleUpdateMedicine = async (medicine: Medicine) => {
         setIsUpdating(true);
+        try {
+            await medicineService.updateMedicine(medicine.id, medicine.name, medicine.cylinder_number);
+        } catch (error) {
+            console.error('Erro ao atualizar o medicamento:', error);
+        } finally {
+            setIsUpdating(false);
+            fetchMedicine();
+            alert("Dados do medicamento atualizados com sucesso!");
+        }
     };
 
-    const handleDeleteMedicine = (row: Record<string, any>) => {
-        const medicine = row as Medicine;
-        setSelectedMedicine(medicine);
-        setIsDeleting(true);
-
+    const handleDeleteMedicine = async (medicine: Medicine) => {
+        try {
+            await medicineService.deleteMedicine(medicine.id);
+        } catch (error) {
+            console.error('Erro ao deletar o medicamento:', error);
+        } finally {
+            setIsDeleting(false);
+            fetchMedicine();
+            alert("O medicamento foi excluído!")
+        }
     };
 
     const handleUpdatePatient = (row: Record<string, any>) => {
         const user = row as Routine;
-        setSelectedRoutine(user);
-        setIsUpdating(true);
+        //setSelectedRoutine(user);
+        //setIsUpdating(true);
     };
 
     const handleDeletePatient = (row: Record<string, any>) => {
         const user = row as Routine;
-        setSelectedRoutine(user);
-        setIsDeleting(true);
+        // setSelectedRoutine(user);
+        //setIsDeleting(true);
 
     };
 
@@ -107,14 +118,20 @@ const Dispenser: React.FC = () => {
                 Adicionar Rotina
             </Button>
 
-
-
             <div className="table-container">
                 <Table
                     columns={columnsMedicine}
                     data={dataMedicine}
-                    onUpdate={handleUpdateMedicine}
-                    onDelete={handleDeleteMedicine}
+                    onUpdate={(row) => {
+                        const medicine = row as Medicine;
+                        setSelectedMedicine(medicine);
+                        setIsUpdating(true);
+                    }}
+                    onDelete={(row) => {
+                        const med = row as Medicine;
+                        setSelectedMedicine(med);
+                        setIsDeleting(true);
+                    }}
                 />
             </div>
 
@@ -126,20 +143,36 @@ const Dispenser: React.FC = () => {
                     onDelete={handleDeletePatient}
                 />
             </div>
-            {isUpdating && (
+            {isUpdating && selectedMedicine && (
                 <PopupUpdate
-                    item={{ nome: "Carlos", status: "Ativo" }}
+                    item={selectedMedicine as Medicine}
                     title="Editar medicamento"
                     image="logo192.png"
                     fields={[
-                        { key: "nome", label: "Nome", type: "text" },
-                        { key: "status", label: "Cilindro", type: "select", options: ["1", "2", "3"] }
+                        { key: "name", label: "Nome", type: "text" },
+                        { key: "cylinder_number", label: "Cilindro", type: "select", options: ["1", "2", "3"] }
                     ]}
                     onClose={() => setIsUpdating(false)}
-                    onUpdate={(updatedItem) => console.log("Atualizado:", updatedItem)}
+                    onUpdate={(updatedItem) => {
+                        if (selectedMedicine)
+                            handleUpdateMedicine({
+                                id: selectedMedicine.id,
+                                name: updatedItem.name,
+                                cylinder_number: updatedItem.cylinder_number,
+                            });
+                    }}
+
                 />
             )}
 
+            {isDeleting && selectedMedicine && (
+                <PopupDelete
+                    userId={selectedMedicine.id}
+                    userName={selectedMedicine.name}
+                    onClose={() => setIsDeleting(false)}
+                    onDelete={() => handleDeleteMedicine(selectedMedicine)}
+                />
+            )}
 
         </>
     );
