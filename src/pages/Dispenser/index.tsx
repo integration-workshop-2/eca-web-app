@@ -25,10 +25,13 @@ const Dispenser: React.FC = () => {
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const navigate = useNavigate();
 
-    const handleNavigate = () => {
+    const handleNavigateToAddRoutine = () => {
         navigate("/addroutine");
     };
 
+    const handleNavigateToAddMedicine = () => {
+        navigate("/addmedicine");
+    };
     const columnsMedicine = [
         { header: "Remédio", accessor: "name" },
         { header: "Cilindro", accessor: "cylinder_number" }
@@ -73,21 +76,19 @@ const Dispenser: React.FC = () => {
         try {
             await medicineService.updateMedicine(medicine.id, medicine.name, medicine.cylinder_number);
         } catch (error) {
-            console.error('Erro ao atualizar o nome:', error);
+            console.error('Erro ao atualizar o medicamento:', error);
         } finally {
             setIsUpdating(false);
             fetchMedicine();
-            alert("Dados do paciente atualizados com sucesso!");
+            alert("Dados do medicamento atualizados com sucesso!");
         }
     };
 
-
     const handleDeleteMedicine = async (medicine: Medicine) => {
-        setIsDeleting(true);
         try {
             await medicineService.deleteMedicine(medicine.id);
         } catch (error) {
-            console.error('Erro ao deletar o usuário:', error);
+            console.error('Erro ao deletar o medicamento:', error);
         } finally {
             setIsDeleting(false);
             fetchMedicine();
@@ -110,14 +111,12 @@ const Dispenser: React.FC = () => {
 
     return (
         <>
-            <Button onClick={() => handleNavigate()} className="add">
+            <Button onClick={() => handleNavigateToAddMedicine()} className="add">
                 Adicionar Remédio
             </Button>
-            <Button onClick={() => handleNavigate()} className="add">
+            <Button onClick={() => handleNavigateToAddRoutine()} className="add">
                 Adicionar Rotina
             </Button>
-
-
 
             <div className="table-container">
                 <Table
@@ -128,10 +127,10 @@ const Dispenser: React.FC = () => {
                         setSelectedMedicine(medicine);
                         setIsUpdating(true);
                     }}
-
-                    onDelete={() => {
-                        if (selectedMedicine)
-                            handleDeleteMedicine(selectedMedicine)
+                    onDelete={(row) => {
+                        const med = row as Medicine;
+                        setSelectedMedicine(med);
+                        setIsDeleting(true);
                     }}
                 />
             </div>
@@ -166,6 +165,14 @@ const Dispenser: React.FC = () => {
                 />
             )}
 
+            {isDeleting && selectedMedicine && (
+                <PopupDelete
+                    userId={selectedMedicine.id}
+                    userName={selectedMedicine.name}
+                    onClose={() => setIsDeleting(false)}
+                    onDelete={() => handleDeleteMedicine(selectedMedicine)}
+                />
+            )}
 
         </>
     );
