@@ -8,8 +8,12 @@ interface DataPoint {
   amt: number;
 }
 interface patientSelected {
+
   id: string;
   name: string;
+  bpm: number;
+  oxygenation_percentage: number;
+  temperature: number;
 }
 
 const data: DataPoint[] = [
@@ -22,10 +26,10 @@ const data: DataPoint[] = [
   { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
 ];
 
-const LineChartComponent: React.FC<patientSelected> = ({id, name}) => {
+const LineChartComponent: React.FC<patientSelected> = ({id, name, oxygenation_percentage}) => {
   return (
     <>
-      <p>{id} {name}</p>
+      <p>{id} {name}, {oxygenation_percentage}</p>
     <ResponsiveContainer width="100%" height={250}>
     
       <LineChart

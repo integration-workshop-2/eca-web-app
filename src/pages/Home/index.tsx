@@ -14,11 +14,13 @@ interface NonRecognized {
 interface PatientSelected {
   id: string;
   name: string;
+  bpm: number;
+  oxygenation_percentage: number;
+  temperature: number;
+
 }
-interface patientParameters {
+interface patientParameters extends Omit<PatientSelected, "id" | "temperature" >{
   patient_name: string;
-  bpm: string;
-  oxygenation_percentage: string;
   date: string;
 }
 
@@ -97,7 +99,10 @@ const Home: React.FC = () => {
 
   const patientsName = dataPatient.map((patient) => ({
     id: patient.id,
-    name: patient.name
+    name: patient.name,
+    bpm: 0, // Valor padrão
+    oxygenation_percentage: 0, // Valor padrão
+    temperature: 0, // Valor padrão
   }));
 
   return (
