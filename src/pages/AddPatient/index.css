@@ -1,0 +1,21 @@
+
+.add-patient-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-patient-form .input-group {
+    width: 50vw;
+}
+
+.add-patient-form .input-group input {
+    box-sizing: border-box;
+    margin: 0;
+    width: 100%;
+}
+
+.add-patient-form .input-group label {
+    margin: 0;
+    font-size: 1.25em;
+    font-weight: bold;
+}
