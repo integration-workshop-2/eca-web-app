@@ -1,6 +1,6 @@
 .filterable-dropdown {
     position: relative;
-    width: 250px;
+    width: 100%;
 }
 
 .filterable-dropdown input {
@@ -16,7 +16,7 @@
     top: 40px;
     left: 0;
     right: 0;
-    width: 108%;
+    width: 100%;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -63,6 +63,26 @@
   gap: 20px; /* Espaçamento entre os itens dentro do contêiner */
   justify-content: flex-start; /* Alinha os itens no início */
   align-items: center; /* Alinha os itens verticalmente no centro */
+}
+
+.add-routine-form {
+    flex-direction: column;
+}
+
+.add-routine-form .input-group {
+    width: 50vw;
+}
+
+.add-routine-form .input-group input {
+    box-sizing: border-box;
+    margin: 0;
+    width: 100%;
+}
+
+.add-routine-form .input-group label {
+    margin: 0;
+    font-size: 1.25em;
+    font-weight: bold;
 }
 
 @media (max-width: 768px) {

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilterableDropdown from "../../components/layout/Miscellaneus/FilterableDropdown";
-import "./index.css";
 import Table from "../../components/layout/Table";
+import Button from "../../components/layout/Miscellaneus/Buttons";
+import patientService from "../../services/patientService";
+import "./index.css";
 
 interface Medicine {
     id: number;
@@ -11,9 +13,12 @@ interface Medicine {
     quantity: number;
 }
 
+interface Patient {
+    id: string;
+    name: string;
+}
+
 const AddRoutine: React.FC = () => {
-
-
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
@@ -24,11 +29,9 @@ const AddRoutine: React.FC = () => {
         { header: "Quantidade", accessor: "quantity" }
     ];
 
-
     const [dataMedicine, setDataMedicine] = useState<Medicine[]>([
         { id: 1, weekdays: "Paracetamol", timeable: "1", medicine: "Paracetamol", quantity: 10 }
     ]);
-
 
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
 
@@ -42,7 +45,6 @@ const AddRoutine: React.FC = () => {
         const user = row as Medicine;
         setSelectedMedicine(user);
         setIsDeleting(true);
-
     };
 
     const medications = [
@@ -56,37 +58,78 @@ const AddRoutine: React.FC = () => {
     const handleSelect = (item: { id: number; name: string }) => {
         console.log("Item selecionado:", item);
     };
+    
+    useEffect(() => {
+        fetchPatients();
+        // TODO:
+        // fetchMedicines();
+    }, []);
+
+    const [patients, setPatients] = useState<Patient[]>([]);
+    const [selectedPatient, setSelectedPatient] = useState<Patient>();
+    const fetchPatients = async () => {
+        try {
+            const patients = await patientService.all();
+            setPatients(patients);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <>
-            <div className="table-container">
-                <p>Pacientes</p>
-                <FilterableDropdown
-                    options={medications}
-                    onSelect={handleSelect}
-                    placeholder="Pesquisar pacientes..."
-                    displayField="name" 
-                />
-                <p>Dias da semana</p>
-                <FilterableDropdown
-                    options={medications}
-                    onSelect={handleSelect}
-                    placeholder="Pesquisar dias da semana..."
-                    displayField="name" 
-                />
-                <p>Medicamentos</p>
-                <FilterableDropdown
-                    options={medications}
-                    onSelect={handleSelect}
-                    placeholder="Pesquisar medicamentos..."
-                    displayField="name" 
-                />
-            </div>
-            <div className="table-container">
+            <div className="table-container add-routine-form">
+                <div className="input-group">
+                    <label>Paciente</label>
+                    <FilterableDropdown
+                        options={patients}
+                        onSelect={ (p: Patient) => { setSelectedPatient(p) } }
+                        placeholder="Pesquisar pacientes..."
+                        displayField="name" 
+                    />
+                </div>
 
+                <div className="input-group">
+                    <label>Dia da semana</label>
+                    <select>
+                        <option value={1}>Domingo</option>
+                        <option value={2}>Segunda-Feira</option>
+                        <option value={3}>Terça-Feira</option>
+                        <option value={4}>Quarta-Feira</option>
+                        <option value={5}>Quinta-Feira</option>
+                        <option value={6}>Sexta-Feira</option>
+                        <option value={7}>Sábado</option>
+                    </select>
+                </div>
+
+                <div className="input-group">
+                    <label>Horário</label>
+                    <input type="time"/>
+                </div>
+
+                <div className="input-group">
+                    <label>Medicamento</label>
+                    <FilterableDropdown
+                        options={medications}
+                        onSelect={handleSelect}
+                        placeholder="Pesquisar medicamentos..."
+                        displayField="name" 
+                    />
+                </div>
+
+                <div className="input-group">
+                    <label>Quantidade</label>
+                    <input type="number"/>
+                </div>
+
+                <div className="button-group">
+                    <Button className="add">Adicionar</Button>
+                    <Button className="delete">Limpar</Button>
+                </div>
             </div>
 
             <div className="table-container">
+                {/* TODO: remover botao de atualizar */}
                 <Table
                     columns={columnsMedicine}
                     data={dataMedicine}
