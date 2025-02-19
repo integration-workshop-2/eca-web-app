@@ -1,0 +1,21 @@
+.settings-form {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.settings-form .input-group {
+    width: 50vw;
+}
+
+.settings-form .input-group input {
+    box-sizing: border-box;
+    margin: 0;
+    width: 100%;
+}
+
+.settings-form .input-group label {
+    margin: 0;
+    font-size: 1.25em;
+    font-weight: bold;
+}
