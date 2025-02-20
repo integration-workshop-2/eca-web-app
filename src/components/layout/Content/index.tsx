@@ -11,8 +11,12 @@ import { useAuth } from '../../../hooks/useAuth';
 import { PrivateRoute } from '../PrivateRoute';
 import Login from '../../../pages/Login';
 import AddMedicine from "../../../pages/AddMedicine";
+import Toast from "../Miscellaneus/Toast";
+import { useToast } from "../../../contexts/ToastContext";
 
 const Content: React.FC = () => {
+    const { toastMessage, setToastMessage } = useToast();
+
     return (
         <main className="Content">
             <Routes>
@@ -24,7 +28,14 @@ const Content: React.FC = () => {
                 <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
                 <Route path="/addPatients" element={<PrivateRoute><AddPatient /></PrivateRoute>} />
                 <Route path="/login" element={<Login />} />
-            </Routes>
+            </Routes>      
+            {
+                (toastMessage.length > 0) ?
+                <Toast
+                    message={toastMessage}
+                    onClose={() => setToastMessage('')}/> :
+                ''
+            }
         </main>
     );
 };
