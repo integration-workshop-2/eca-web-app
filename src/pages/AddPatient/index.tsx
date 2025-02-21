@@ -4,6 +4,7 @@ import Button from "../../components/layout/Miscellaneus/Buttons";
 import TextBox from "../../components/layout/Miscellaneus/TextBox";
 import patientService from "../../services/patientService";
 import './index.css';
+import { useToast } from "../../contexts/ToastContext";
 
 export default function AddPatient() {
     const [text, setText] = useState("");
@@ -17,11 +18,12 @@ export default function AddPatient() {
         } catch (error) {
             console.error('Erro ao atualizar o nome:', error);
         } finally {
-            alert("Dados criados com sucesso!");
+            setToastMessage("Dados criados com sucesso!");
             navigate('/patients')
         }
     };
 
+    const { setToastMessage } = useToast();
 
     return (
         <div className="table-container add-patient-form">
