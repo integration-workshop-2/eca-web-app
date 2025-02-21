@@ -1,0 +1,66 @@
+.toast {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: fixed;
+    right: 2vw;
+    bottom: 2vh;
+    width: 27.5vw;
+
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.2);
+    border: 1px solid lightgray;
+    border-radius: 2.5px;
+
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.toast .toast-header, .toast .toast-body {
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.toast .toast-header {
+    justify-content: space-between;
+    padding: 0.5em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+}
+
+.toast .toast-header button {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    line-height: 0.5;
+}
+
+.toast .toast-body {
+    padding: 0.75em 0.5em;
+    line-height: 1;
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.015);
+}
+
+.toast-info {
+    background-color: white;
+}
+
+.toast-success {
+    background-color: rgb(153, 231, 166);
+}
+
+.toast-error {
+    background-color: rgb(231, 138, 138);
+}
+
+.toast-warning {
+    background-color: rgb(253, 255, 146);
+}
+
+@media (max-width: 768px) {
+    .toast {
+        width: 96vw;
+    }
+}
