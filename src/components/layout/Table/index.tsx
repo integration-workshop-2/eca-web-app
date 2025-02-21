@@ -10,8 +10,8 @@ interface Column {
 interface TableProps {
     columns: Column[];
     data: Record<string, any>[];
-    onUpdate: (row: Record<string, any>) => void;
-    onDelete: (row: Record<string, any>) => void;
+    onUpdate?: (row: Record<string, any>) => void;
+    onDelete?: (row: Record<string, any>) => void;
 }
 
 const Table: React.FC<TableProps> = ({ columns, data, onUpdate, onDelete }) => {
@@ -64,12 +64,16 @@ const Table: React.FC<TableProps> = ({ columns, data, onUpdate, onDelete }) => {
                             <td key={colIndex}>{row[column.accessor]}</td>
                         ))}
                         <td className="buttonoptions">
+                        {onUpdate && (
                             <Button onClick={() => onUpdate(row)} className="update">
                                 Atualizar
                             </Button>
+                        )}
+                         {onDelete && (
                             <Button onClick={() => onDelete(row)} className="delete">
                                 Deletar
                             </Button>
+                         )}
                         </td>
                     </tr>
                 ))}

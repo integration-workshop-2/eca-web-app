@@ -4,6 +4,7 @@ import Table from "../../components/layout/Table";
 import Button from "../../components/layout/Miscellaneus/Buttons";
 import patientService from "../../services/patientService";
 import "./index.css";
+import medicineService from "../../services/medicineService";
 
 interface Medicine {
     id: number;
@@ -12,7 +13,10 @@ interface Medicine {
     medicine: string;
     quantity: number;
 }
-
+interface Medications {
+    id: number;
+    name: string;
+}
 interface Patient {
     id: string;
     name: string;
@@ -21,6 +25,7 @@ interface Patient {
 const AddRoutine: React.FC = () => {
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
+    const [listRoutine, setListRoutine] = useState([]);
 
     const columnsMedicine = [
         { header: "Dia da semana", accessor: "weekdays" },
@@ -47,13 +52,6 @@ const AddRoutine: React.FC = () => {
         setIsDeleting(true);
     };
 
-    const medications = [
-        { id: 1, name: "Paracetamol" },
-        { id: 2, name: "Ibuprofeno" },
-        { id: 3, name: "Amoxicilina" },
-        { id: 4, name: "Dipirona" },
-        { id: 5, name: "Ranitidina" },
-    ];
 
     const handleSelect = (item: { id: number; name: string }) => {
         console.log("Item selecionado:", item);
@@ -61,16 +59,36 @@ const AddRoutine: React.FC = () => {
     
     useEffect(() => {
         fetchPatients();
-        // TODO:
-        // fetchMedicines();
+        fetchMedicine();
     }, []);
 
     const [patients, setPatients] = useState<Patient[]>([]);
     const [selectedPatient, setSelectedPatient] = useState<Patient>();
+    const [medications, setMedications] = useState<{ id: number; name: string; }[]>([]);
+
     const fetchPatients = async () => {
         try {
             const patients = await patientService.all();
             setPatients(patients);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchMedicine = async () => {
+        try {
+            const response = await medicineService.all();
+            if (Array.isArray(response)) {
+                const uniqueMedications = new Map();
+                response.forEach((med) => {
+                    if(!uniqueMedications.has(med.name)){
+                        uniqueMedications.set(med.name, {id: med.id, name: med.name})
+                    }
+                });
+                setMedications(Array.from(uniqueMedications.values()));
+            } else {
+                console.error("Formato inesperado de dados:", response);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -110,7 +128,7 @@ const AddRoutine: React.FC = () => {
                 <div className="input-group">
                     <label>Medicamento</label>
                     <FilterableDropdown
-                        options={medications}
+                        options={medications || []}
                         onSelect={handleSelect}
                         placeholder="Pesquisar medicamentos..."
                         displayField="name" 
@@ -129,14 +147,15 @@ const AddRoutine: React.FC = () => {
             </div>
 
             <div className="table-container">
-                {/* TODO: remover botao de atualizar */}
                 <Table
                     columns={columnsMedicine}
                     data={dataMedicine}
-                    onUpdate={handleUpdateMedicine}
                     onDelete={handleDeleteMedicine}
                 />
+                
             </div>
+            <Button className="add">Adicionar</Button>
+          
         </>
     );
 };
