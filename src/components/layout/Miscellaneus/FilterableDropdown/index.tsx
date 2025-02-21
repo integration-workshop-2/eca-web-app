@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-
 interface FilterableDropdownProps<T> {
-  options: T[]; 
-  onSelect: (item: T) => void; 
-  placeholder?: string; 
-  displayField?: keyof T; 
+  options: T[];
+  onSelect: (item: T) => void;
+  placeholder?: string;
+  displayField?: keyof T;
+  disabled?: boolean;  // Permite desabilitar o dropdown
 }
 
 const FilterableDropdown = <T,>({
@@ -12,10 +12,10 @@ const FilterableDropdown = <T,>({
   onSelect,
   placeholder = "Digite algo...",
   displayField,
+  disabled = false,  // Padrão: dropdown habilitado
 }: FilterableDropdownProps<T>) => {
-  const [searchTerm, setSearchTerm] = useState<string>(""); 
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false); 
-
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const filteredOptions = options.filter((option) => {
     const text = displayField
@@ -25,7 +25,7 @@ const FilterableDropdown = <T,>({
   });
 
   return (
-    <div className="filterable-dropdown">
+    <div className={`filterable-dropdown ${disabled ? "disabled" : ""}`}>
       <input
         type="text"
         placeholder={placeholder}
@@ -33,23 +33,20 @@ const FilterableDropdown = <T,>({
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setSearchTerm(e.target.value)
         }
-        onFocus={() => setIsDropdownOpen(true)}
-        onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
+        onFocus={() => !disabled && setIsDropdownOpen(true)}
+        onBlur={() => !disabled && setTimeout(() => setIsDropdownOpen(false), 200)}
+        disabled={disabled} // 🔹 Bloqueia a digitação se estiver desativado
       />
 
-      {isDropdownOpen && (
+      {isDropdownOpen && !disabled && (
         <ul className="dropdown-list">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option, index) => (
               <li
                 key={index}
                 onClick={() => {
-                  onSelect(option); 
-                  setSearchTerm(
-                    displayField
-                      ? String(option[displayField])
-                      : String(option)
-                  );
+                  onSelect(option);
+                  setSearchTerm(displayField ? String(option[displayField]) : String(option));
                   setIsDropdownOpen(false);
                 }}
               >

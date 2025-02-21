@@ -13,67 +13,37 @@ interface Medicine {
     medicine: string;
     quantity: number;
 }
+
 interface Medications {
     id: number;
     name: string;
 }
+
 interface Patient {
     id: string;
     name: string;
 }
 
 const AddRoutine: React.FC = () => {
-    const [isUpdating, setIsUpdating] = useState<boolean>(false);
-    const [isDeleting, setIsDeleting] = useState<boolean>(false);
-    const [listRoutine, setListRoutine] = useState([]);
+    const [dataMedicine, setDataMedicine] = useState<Medicine[]>([]);
+    const [patients, setPatients] = useState<Patient[]>([]);
+    const [medications, setMedications] = useState<Medications[]>([]);
+    const [selectedMedicine, setSelectedMedicine] = useState<Medications | null>(null);
+    const [selectedPatients, setSelectedPatients] = useState<Patient | null>(null);
 
-    const columnsMedicine = [
-        { header: "Dia da semana", accessor: "weekdays" },
-        { header: "Horário", accessor: "timetable" },
-        { header: "Remédio", accessor: "medicine" },
-        { header: "Quantidade", accessor: "quantity" }
-    ];
-
-    const [dataMedicine, setDataMedicine] = useState<Medicine[]>([
-        { id: 1, weekdays: "Paracetamol", timeable: "1", medicine: "Paracetamol", quantity: 10 }
-    ]);
-
-    const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
-
-    const handleUpdateMedicine = (row: Record<string, any>) => {
-        const user = row as Medicine;
-        setSelectedMedicine(user);
-        setIsUpdating(true);
-    };
-
-    const handleDeleteMedicine = (row: Record<string, any>) => {
-        const user = row as Medicine;
-        setSelectedMedicine(user);
-        setIsDeleting(true);
-    };
-
-
-    const handleSelect = (item: { id: number; name: string }) => {
-        console.log("Item selecionado:", item);
-    };
-    
     useEffect(() => {
         fetchPatients();
         fetchMedicine();
     }, []);
-
-    const [patients, setPatients] = useState<Patient[]>([]);
-    const [selectedPatient, setSelectedPatient] = useState<Patient>();
-    const [medications, setMedications] = useState<{ id: number; name: string; }[]>([]);
 
     const fetchPatients = async () => {
         try {
             const patients = await patientService.all();
             setPatients(patients);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    }
+    };
 
     const fetchMedicine = async () => {
         try {
@@ -81,8 +51,8 @@ const AddRoutine: React.FC = () => {
             if (Array.isArray(response)) {
                 const uniqueMedications = new Map();
                 response.forEach((med) => {
-                    if(!uniqueMedications.has(med.name)){
-                        uniqueMedications.set(med.name, {id: med.id, name: med.name})
+                    if (!uniqueMedications.has(med.name)) {
+                        uniqueMedications.set(med.name, { id: med.id, name: med.name });
                     }
                 });
                 setMedications(Array.from(uniqueMedications.values()));
@@ -90,72 +60,126 @@ const AddRoutine: React.FC = () => {
                 console.error("Formato inesperado de dados:", response);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    }
+    };
+
+    const handleAddMedicine = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const selectedWeekdayValue = formData.get("weekdays") as string;
+        const selectedTime = formData.get("time") as string;
+        const quantity = Number(formData.get("quantity"));
+
+        if (!selectedWeekdayValue || !selectedTime || !selectedMedicine || !quantity) {
+            alert("Preencha todos os campos!");
+            return;
+        }
+        const isAlreadyAdded = dataMedicine.some(
+            (med) => med.medicine === selectedMedicine.name
+        );
+    
+        if (isAlreadyAdded) {
+            const confirmAdd = window.confirm(
+                `O medicamento "${selectedMedicine.name}" já foi adicionado. Deseja adicioná-lo novamente?`
+            );
+    
+            if (!confirmAdd) {
+                return; 
+            }
+        }
+
+        const weekDaysMap: Record<string, string> = {
+            "1": "Domingo",
+            "2": "Segunda-Feira",
+            "3": "Terça-Feira",
+            "4": "Quarta-Feira",
+            "5": "Quinta-Feira",
+            "6": "Sexta-Feira",
+            "7": "Sábado",
+        };
+
+        const newMedicine: Medicine = {
+            id: Date.now(),
+            weekdays: weekDaysMap[selectedWeekdayValue] || "Desconhecido",
+            timeable: selectedTime,
+            medicine: selectedMedicine.name,
+            quantity: quantity
+        };
+
+        setDataMedicine((prevData) => [...prevData, newMedicine]);
+
+        event.currentTarget.reset();
+
+        setSelectedMedicine(null);
+    };
 
     return (
         <>
-            <div className="table-container add-routine-form">
+            <form onSubmit={handleAddMedicine} className="table-container add-routine-form">
                 <div className="input-group">
                     <label>Paciente</label>
                     <FilterableDropdown
                         options={patients}
-                        onSelect={ (p: Patient) => { setSelectedPatient(p) } }
+                        onSelect={(p: Patient) => setSelectedPatients(p)}
                         placeholder="Pesquisar pacientes..."
-                        displayField="name" 
+                        displayField="name"
+                        disabled={!!selectedPatients} 
                     />
                 </div>
 
                 <div className="input-group">
                     <label>Dia da semana</label>
-                    <select>
-                        <option value={1}>Domingo</option>
-                        <option value={2}>Segunda-Feira</option>
-                        <option value={3}>Terça-Feira</option>
-                        <option value={4}>Quarta-Feira</option>
-                        <option value={5}>Quinta-Feira</option>
-                        <option value={6}>Sexta-Feira</option>
-                        <option value={7}>Sábado</option>
+                    <select name="weekdays">
+                        <option value="1">Domingo</option>
+                        <option value="2">Segunda-Feira</option>
+                        <option value="3">Terça-Feira</option>
+                        <option value="4">Quarta-Feira</option>
+                        <option value="5">Quinta-Feira</option>
+                        <option value="6">Sexta-Feira</option>
+                        <option value="7">Sábado</option>
                     </select>
                 </div>
 
                 <div className="input-group">
                     <label>Horário</label>
-                    <input type="time"/>
+                    <input type="time" name="time" />
                 </div>
 
                 <div className="input-group">
                     <label>Medicamento</label>
                     <FilterableDropdown
-                        options={medications || []}
-                        onSelect={handleSelect}
+                        options={medications}
+                        onSelect={(med: Medications) => setSelectedMedicine(med)}
                         placeholder="Pesquisar medicamentos..."
-                        displayField="name" 
+                        displayField="name"
                     />
                 </div>
 
                 <div className="input-group">
                     <label>Quantidade</label>
-                    <input type="number"/>
+                    <input type="number" name="quantity" />
                 </div>
 
                 <div className="button-group">
-                    <Button className="add">Adicionar</Button>
-                    <Button className="delete">Limpar</Button>
+                    <Button type="submit" className="add">Adicionar</Button>
+                    <Button type="button" className="delete" onClick={() => setDataMedicine([])}>Limpar</Button>
                 </div>
-            </div>
+            </form>
 
             <div className="table-container">
                 <Table
-                    columns={columnsMedicine}
+                    columns={[
+                        { header: "Dia da semana", accessor: "weekdays" },
+                        { header: "Horário", accessor: "timeable" },
+                        { header: "Remédio", accessor: "medicine" },
+                        { header: "Quantidade", accessor: "quantity" }
+                    ]}
                     data={dataMedicine}
-                    onDelete={handleDeleteMedicine}
+                    onDelete={(row) => setDataMedicine(dataMedicine.filter((item) => item.id !== row.id))}
                 />
-                
             </div>
-            <Button className="add">Adicionar</Button>
-          
+            <Button type="submit" className="add">Adicionar</Button>
         </>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/layout/Miscellaneus/Buttons";
 import TextBox from "../../components/layout/Miscellaneus/TextBox";
@@ -10,20 +10,21 @@ export default function AddPatient() {
     const [text, setText] = useState("");
     const navigate = useNavigate();
 
-    const handleCreatePatient = async (name: string) => {
+    const [loading, setLoading] = useState(false);
+    const { setToastMessage } = useToast();
 
+    const handleCreatePatient = useCallback(async (name: string) => {
+        setLoading(true);
         try {
             await patientService.createPatient(name);
-
-        } catch (error) {
-            console.error('Erro ao atualizar o nome:', error);
-        } finally {
             setToastMessage("Dados criados com sucesso!");
-            navigate('/patients')
+            navigate('/patients');
+        } catch (error) {
+            console.error('Erro ao adicionar paciente:', error);
+        } finally {
+            setLoading(false);
         }
-    };
-
-    const { setToastMessage } = useToast();
+    }, [navigate, setToastMessage]);
 
     return (
         <div className="table-container add-patient-form">
@@ -33,12 +34,16 @@ export default function AddPatient() {
                     value={text}
                     placeholder="Nome do paciente"
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setText(e.target.value)}
-                    />
+                />
             </div>
 
             <div className="button-group">
-                <Button onClick={() => handleCreatePatient(text)} className="update">
-                    Adicionar Paciente
+                <Button
+                    onClick={() => handleCreatePatient(text)}
+                    className="update"
+                    disabled={loading} 
+                >
+                    {loading ? "Carregando..." : "Adicionar Paciente"}
                 </Button>
 
                 <Button onClick={() => navigate('/patients')} className="delete">
