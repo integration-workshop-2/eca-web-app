@@ -100,9 +100,9 @@ const Home: React.FC = () => {
   const patientsName = dataPatient.map((patient) => ({
     id: patient.id,
     name: patient.name,
-    bpm: 0, // Valor padrão
-    oxygenation_percentage: 0, // Valor padrão
-    temperature: 0, // Valor padrão
+    bpm: 0, 
+    oxygenation_percentage: 0, 
+    temperature: 0, 
   }));
 
   return (
@@ -112,6 +112,13 @@ const Home: React.FC = () => {
           <>
             <LineChartComponent {...patientSelected} />
           </>
+          
+        )}
+         {patientSelected && (
+          <>
+            <LineChartComponent {...patientSelected} />
+          </>
+          
         )}
         <FilterableDropdown
           options={patientsName}

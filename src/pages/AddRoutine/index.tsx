@@ -5,6 +5,7 @@ import Button from "../../components/layout/Miscellaneus/Buttons";
 import patientService from "../../services/patientService";
 import "./index.css";
 import medicineService from "../../services/medicineService";
+import { useToast } from "../../contexts/ToastContext";
 
 interface Medicine {
     id: number;
@@ -25,6 +26,7 @@ interface Patient {
 }
 
 const AddRoutine: React.FC = () => {
+    const {setToastMessage, setToastType} = useToast();
     const [dataMedicine, setDataMedicine] = useState<Medicine[]>([]);
     const [patients, setPatients] = useState<Patient[]>([]);
     const [medications, setMedications] = useState<Medications[]>([]);
@@ -72,7 +74,8 @@ const AddRoutine: React.FC = () => {
         const quantity = Number(formData.get("quantity"));
 
         if (!selectedWeekdayValue || !selectedTime || !selectedMedicine || !quantity) {
-            alert("Preencha todos os campos!");
+            setToastType('warning');
+            setToastMessage("Preencha todos os campos!");
             return;
         }
         const isAlreadyAdded = dataMedicine.some(

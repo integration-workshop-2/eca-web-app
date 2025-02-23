@@ -8,6 +8,7 @@ import PopupUpdate from "../../components/layout/Miscellaneus/PopupUpdate";
 import PopupDelete from "../../components/layout/Miscellaneus/PopupDelete";
 import routineService from "../../services/routineService";
 import medicineService from "../../services/medicineService";
+import { useToast } from "../../contexts/ToastContext";
 interface Medicine {
     id: string;
     name: string;
@@ -21,6 +22,7 @@ interface Routine {
 }
 
 const Dispenser: React.FC = () => {
+    const { setToastMessage, setToastType } = useToast();
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -44,9 +46,11 @@ const Dispenser: React.FC = () => {
 
     const [dataMedicine, setDataMedicine] = useState<Medicine[]>([]);
     const [dataRoutine, setDataRoutine] = useState<Routine[]>([]);
+    const [availableCylinders, setAvailableCylinders] = useState<string[]>([]);
     useEffect(() => {
         fetchMedicine();
         fetchDataRoutine();
+        fetchAvailableCylinders();
     }, []);
 
     const fetchMedicine = async () => {
@@ -68,11 +72,20 @@ const Dispenser: React.FC = () => {
         }
     }
 
+    const fetchAvailableCylinders = async () => {
+        try {
+            const response = await medicineService.listAvailableCylinders();
+            const availableCylinders = response.available_cylinders;
+            setAvailableCylinders(availableCylinders.map((cyl: number) => cyl.toString()));
+        } catch (error) {
+            console.error("Erro ao listar cilindros disponíveis:", error);
+        }
+    };
+
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
     const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
 
     const handleUpdateMedicine = async (medicine: Medicine) => {
-        setIsUpdating(true);
         try {
             await medicineService.updateMedicine(medicine.id, medicine.name, medicine.cylinder_number);
         } catch (error) {
@@ -80,7 +93,8 @@ const Dispenser: React.FC = () => {
         } finally {
             setIsUpdating(false);
             fetchMedicine();
-            alert("Dados do medicamento atualizados com sucesso!");
+            setToastType('success');
+            setToastMessage("Dados do medicamento atualizados com sucesso!");
         }
     };
 
@@ -92,7 +106,8 @@ const Dispenser: React.FC = () => {
         } finally {
             setIsDeleting(false);
             fetchMedicine();
-            alert("O medicamento foi excluído!")
+            setToastType('success');
+            setToastMessage("O medicamento foi excluído!")
         }
     };
 
@@ -125,6 +140,7 @@ const Dispenser: React.FC = () => {
                     onUpdate={(row) => {
                         const medicine = row as Medicine;
                         setSelectedMedicine(medicine);
+                        fetchAvailableCylinders();
                         setIsUpdating(true);
                     }}
                     onDelete={(row) => {
@@ -150,16 +166,23 @@ const Dispenser: React.FC = () => {
                     image="logo192.png"
                     fields={[
                         { key: "name", label: "Nome", type: "text" },
-                        { key: "cylinder_number", label: "Cilindro", type: "select", options: ["1", "2", "3"] }
+                        { key: "cylinder_number", label: "Cilindro", type: "select", options: availableCylinders }
                     ]}
                     onClose={() => setIsUpdating(false)}
                     onUpdate={(updatedItem) => {
-                        if (selectedMedicine)
+                        if (selectedMedicine) {
+                            if (updatedItem.cylinder_number == 0) {
+                                setToastType('warning');
+                                setToastMessage("Selecione um cilindro válido!");
+                                return;
+                            }
+
                             handleUpdateMedicine({
                                 id: selectedMedicine.id,
                                 name: updatedItem.name,
                                 cylinder_number: updatedItem.cylinder_number,
                             });
+                        }
                     }}
 
                 />

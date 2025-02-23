@@ -46,6 +46,7 @@ const PopupUpdate = <T,>({ item, title, fields, onClose, onUpdate, image }: Popu
                                     value={String(updatedItem[key])}
                                     onChange={(e) => handleChange(key, e.target.value)}
                                 >
+                                    <option key={0} value={0}>Selecione uma opção</option>
                                     {options.map((option) => (
                                         <option key={option} value={option}>
                                             {option}

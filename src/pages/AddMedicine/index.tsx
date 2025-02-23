@@ -5,8 +5,11 @@ import TextBox from "../../components/layout/Miscellaneus/TextBox";
 import Dropdown from "../../components/layout/Miscellaneus/Dropdown";
 import "./index.css";
 import medicineService from "../../services/medicineService";
+import { useToast } from "../../contexts/ToastContext";
 
 export default function AddMedicine() {
+    const {setToastMessage, setToastType} = useToast();
+
     const [name, setName] = useState("");
     const [cylinders, setCylinders] = useState<{ id: number; label: string }[]>([]);
     const [selectedCylinder, setSelectedCylinder] = useState(0);
@@ -30,17 +33,21 @@ export default function AddMedicine() {
 
     const handleCreateMedicine = async () => {
         if (!name || selectedCylinder === null) {
-            alert("Por favor, preencha todos os campos.");
+            setToastType('warning');
+            setToastMessage("Por favor, preencha todos os campos.");
             return;
         }
         if (selectedCylinder === 0) {
-            alert("Por favor, selecione um cilindro.");
+            setToastType('warning');
+            setToastMessage("Por favor, selecione um cilindro.");
             return;
         }
 
         try {
             await medicineService.createMedicine(name, selectedCylinder);
-            alert("Dados criados com sucesso!");
+            
+            setToastType('success');
+            setToastMessage("Dados criados com sucesso!");
             navigate("/dispenser");
         } catch (error) {
             console.error("Erro ao criar medicamento:", error);
@@ -79,7 +86,7 @@ export default function AddMedicine() {
                 <img src="logo512.png" height={250} width={250} />
 
                 <div className="button-group">
-                    <Button onClick={handleCreateMedicine} className="create">
+                    <Button onClick={handleCreateMedicine} className="update">
                         Adicionar Remédio
                     </Button>
 
