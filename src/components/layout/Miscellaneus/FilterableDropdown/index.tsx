@@ -4,7 +4,7 @@ interface FilterableDropdownProps<T> {
   onSelect: (item: T) => void;
   placeholder?: string;
   displayField?: keyof T;
-  disabled?: boolean;  // Permite desabilitar o dropdown
+  disabled?: boolean;  
 }
 
 const FilterableDropdown = <T,>({
@@ -12,7 +12,7 @@ const FilterableDropdown = <T,>({
   onSelect,
   placeholder = "Digite algo...",
   displayField,
-  disabled = false,  // Padrão: dropdown habilitado
+  disabled = false, 
 }: FilterableDropdownProps<T>) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -35,7 +35,7 @@ const FilterableDropdown = <T,>({
         }
         onFocus={() => !disabled && setIsDropdownOpen(true)}
         onBlur={() => !disabled && setTimeout(() => setIsDropdownOpen(false), 200)}
-        disabled={disabled} // 🔹 Bloqueia a digitação se estiver desativado
+        disabled={disabled} 
       />
 
       {isDropdownOpen && !disabled && (

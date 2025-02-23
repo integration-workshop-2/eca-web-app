@@ -7,7 +7,6 @@ import Dispenser from "../../../pages/Dispenser";
 import AddRoutine from "../../../pages/AddRoutine";
 import Settings from "../../../pages/Settings";
 import AddPatient from "../../../pages/AddPatient";
-import { useAuth } from '../../../hooks/useAuth';
 import { PrivateRoute } from '../PrivateRoute';
 import Login from '../../../pages/Login';
 import AddMedicine from "../../../pages/AddMedicine";

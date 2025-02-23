@@ -49,20 +49,19 @@
 }
 
 .table-container {
-    margin: 2rem auto 1rem; /* Ajuste o espaço externo */
-  padding: 5rem; /* Reduzi o padding para otimizar o espaço */
-  max-width: 90%; /* Max largura para tornar o layout responsivo */
-  /* width: 100%; /* Garante que o contêiner ocupe toda a largura disponível */
+    margin: 2rem auto 1rem; 
+  padding: 5rem; 
+  max-width: 90%;
   z-index: 0;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex; /* Permite um layout flexível */
-  flex-direction: row; /* Itens dentro da tabela serão dispostos horizontalmente */
-  gap: 20px; /* Espaçamento entre os itens dentro do contêiner */
-  justify-content: flex-start; /* Alinha os itens no início */
-  align-items: center; /* Alinha os itens verticalmente no centro */
+  display: flex; 
+  flex-direction: row; 
+  gap: 20px;
+  justify-content: flex-start; 
+  align-items: center; 
 }
 
 .add-routine-form {

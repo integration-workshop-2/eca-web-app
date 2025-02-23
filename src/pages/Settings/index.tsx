@@ -19,7 +19,7 @@ const Settings: React.FC = () => {
 
   const [newPassword, setNewPassword] = useState('');
   const handlePasswordUpdate = () => {
-    if(newPassword.length == 0){
+    if(newPassword.length === 0){
       setToastType('warning');
       setToastMessage('Digite sua nova senha!');
       return;

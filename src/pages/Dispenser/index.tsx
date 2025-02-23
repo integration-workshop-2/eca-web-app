@@ -16,9 +16,9 @@ interface Medicine {
 }
 
 interface Routine {
-    id: number;
-    patientName: string;
-    routine: string[];
+    patient_id: string;
+    patient_name: string;
+    routine_descriptions: string[];
 }
 
 const Dispenser: React.FC = () => {
@@ -39,9 +39,21 @@ const Dispenser: React.FC = () => {
         { header: "Cilindro", accessor: "cylinder_number" }
     ];
 
+    const renderRoutineDescriptions = (value: string[]) => (
+        <div className="break-lines">
+            {value.map((line, index) => (
+                <p key={index}>{line}</p>
+            ))}
+        </div>
+    );
+
     const columnsRoutine = [
-        { header: "Paciente", accessor: "patientName" },
-        { header: "Descrição da rotina", accessor: "routine" }
+        { header: "Paciente", accessor: "patient_name" },
+        { 
+            header: "Descrição da rotina", 
+            accessor: "routine_descriptions", 
+            cellRenderer: renderRoutineDescriptions 
+        }
     ];
 
     const [dataMedicine, setDataMedicine] = useState<Medicine[]>([]);
@@ -83,7 +95,6 @@ const Dispenser: React.FC = () => {
     };
 
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
-    const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
 
     const handleUpdateMedicine = async (medicine: Medicine) => {
         try {
@@ -171,7 +182,7 @@ const Dispenser: React.FC = () => {
                     onClose={() => setIsUpdating(false)}
                     onUpdate={(updatedItem) => {
                         if (selectedMedicine) {
-                            if (updatedItem.cylinder_number == 0) {
+                            if (updatedItem.cylinder_number === 0) {
                                 setToastType('warning');
                                 setToastMessage("Selecione um cilindro válido!");
                                 return;

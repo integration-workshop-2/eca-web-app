@@ -7,4 +7,9 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.break-lines {
+    white-space: pre-wrap; /* Garante que a quebra de linha funcione */
+    word-wrap: break-word;
+}
   

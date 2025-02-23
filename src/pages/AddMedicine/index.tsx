@@ -2,7 +2,6 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/layout/Miscellaneus/Buttons";
 import TextBox from "../../components/layout/Miscellaneus/TextBox";
-import Dropdown from "../../components/layout/Miscellaneus/Dropdown";
 import "./index.css";
 import medicineService from "../../services/medicineService";
 import { useToast } from "../../contexts/ToastContext";

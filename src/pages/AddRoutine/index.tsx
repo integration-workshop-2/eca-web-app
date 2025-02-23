@@ -6,13 +6,14 @@ import patientService from "../../services/patientService";
 import "./index.css";
 import medicineService from "../../services/medicineService";
 import { useToast } from "../../contexts/ToastContext";
-
+import routineService from "../../services/routineService";
+import { useNavigate } from "react-router-dom";
 interface Medicine {
-    id: number;
-    weekdays: string;
-    timeable: string;
-    medicine: string;
-    quantity: number;
+    medicine_id: string;
+    medicine_name: string;
+    week_day: string;
+    day_time: string;
+    medicine_quantity: number;
 }
 
 interface Medications {
@@ -26,13 +27,13 @@ interface Patient {
 }
 
 const AddRoutine: React.FC = () => {
-    const {setToastMessage, setToastType} = useToast();
+    const { setToastMessage, setToastType } = useToast();
     const [dataMedicine, setDataMedicine] = useState<Medicine[]>([]);
     const [patients, setPatients] = useState<Patient[]>([]);
     const [medications, setMedications] = useState<Medications[]>([]);
     const [selectedMedicine, setSelectedMedicine] = useState<Medications | null>(null);
     const [selectedPatients, setSelectedPatients] = useState<Patient | null>(null);
-
+    const navigate = useNavigate();
     useEffect(() => {
         fetchPatients();
         fetchMedicine();
@@ -73,23 +74,32 @@ const AddRoutine: React.FC = () => {
         const selectedTime = formData.get("time") as string;
         const quantity = Number(formData.get("quantity"));
 
+        if (!selectedPatients) {
+            setToastType("warning");
+            setToastMessage("Selecione um paciente antes de cadastrar a rotina!");
+            return;
+        }
+
         if (!selectedWeekdayValue || !selectedTime || !selectedMedicine || !quantity) {
             setToastType('warning');
             setToastMessage("Preencha todos os campos!");
             return;
         }
-        const isAlreadyAdded = dataMedicine.some(
-            (med) => med.medicine === selectedMedicine.name
-        );
-    
+
+        if (!selectedMedicine) {
+            setToastType('warning');
+            setToastMessage("Selecione um medicamento antes de continuar!");
+            return;
+        }
+
+        const isAlreadyAdded = dataMedicine.some((med) => med.medicine_name === selectedMedicine.name);
+
         if (isAlreadyAdded) {
             const confirmAdd = window.confirm(
                 `O medicamento "${selectedMedicine.name}" já foi adicionado. Deseja adicioná-lo novamente?`
             );
-    
-            if (!confirmAdd) {
-                return; 
-            }
+
+            if (!confirmAdd) return;
         }
 
         const weekDaysMap: Record<string, string> = {
@@ -102,19 +112,74 @@ const AddRoutine: React.FC = () => {
             "7": "Sábado",
         };
 
+        const weekDaysMapEnglish: Record<string, string> = {
+            "Domingo": "Sunday",
+            "Segunda-Feira": "Monday",
+            "Terça-Feira": "Tuesday",
+            "Quarta-Feira": "Wednesday",
+            "Quinta-Feira": "Thursday",
+            "Sexta-Feira": "Friday",
+            "Sábado": "Saturday",
+        };
+
         const newMedicine: Medicine = {
-            id: Date.now(),
-            weekdays: weekDaysMap[selectedWeekdayValue] || "Desconhecido",
-            timeable: selectedTime,
-            medicine: selectedMedicine.name,
-            quantity: quantity
+            medicine_id: String(medications.find(m => m.name === selectedMedicine.name)?.id || ""),
+            week_day: weekDaysMap[selectedWeekdayValue] || "",
+            day_time: selectedTime,
+            medicine_name: selectedMedicine.name,
+            medicine_quantity: quantity
         };
 
         setDataMedicine((prevData) => [...prevData, newMedicine]);
 
         event.currentTarget.reset();
-
         setSelectedMedicine(null);
+    };
+
+    const saveRoutine = async () => {
+        if (!selectedPatients) {
+            setToastType("warning");
+            setToastMessage("Selecione um paciente antes de salvar a rotina!");
+            return;
+        }
+
+        if (dataMedicine.length === 0) {
+            setToastType("warning");
+            setToastMessage("Adicione pelo menos um medicamento antes de salvar a rotina!");
+            return;
+        }
+
+        const weekDaysMapEnglish: Record<string, string> = {
+            "Domingo": "Sunday",
+            "Segunda-Feira": "Monday",
+            "Terça-Feira": "Tuesday",
+            "Quarta-Feira": "Wednesday",
+            "Quinta-Feira": "Thursday",
+            "Sexta-Feira": "Friday",
+            "Sábado": "Saturday",
+        };
+
+        const requestBody = {
+            patient_id: selectedPatients.id,
+            routine_items_list: dataMedicine.map((med) => ({
+                medicine_id: medications.find((m) => m.name === med.medicine_name)?.id,
+                medicine_quantity: med.medicine_quantity,
+                week_day: weekDaysMapEnglish[med.week_day] || "Unknown",
+                day_time: med.day_time,
+            })),
+        };
+
+        try {
+            const result = await routineService.createRoutine(requestBody);
+            setToastType('success');
+            setToastMessage("Rotina cadastrada com sucesso!");
+            navigate('/dispenser');
+
+        } catch (error) {
+            setToastType('error');
+            setToastMessage("Ocorreu um erro ao cadastrar a rotina!");
+
+        }
     };
 
     return (
@@ -127,7 +192,7 @@ const AddRoutine: React.FC = () => {
                         onSelect={(p: Patient) => setSelectedPatients(p)}
                         placeholder="Pesquisar pacientes..."
                         displayField="name"
-                        disabled={!!selectedPatients} 
+                        disabled={!!selectedPatients}
                     />
                 </div>
 
@@ -173,16 +238,16 @@ const AddRoutine: React.FC = () => {
             <div className="table-container">
                 <Table
                     columns={[
-                        { header: "Dia da semana", accessor: "weekdays" },
-                        { header: "Horário", accessor: "timeable" },
-                        { header: "Remédio", accessor: "medicine" },
-                        { header: "Quantidade", accessor: "quantity" }
+                        { header: "Dia da semana", accessor: "week_day" },
+                        { header: "Horário", accessor: "day_time" },
+                        { header: "Remédio", accessor: "medicine_name" },
+                        { header: "Quantidade", accessor: "medicine_quantity" }
                     ]}
                     data={dataMedicine}
-                    onDelete={(row) => setDataMedicine(dataMedicine.filter((item) => item.id !== row.id))}
+                    onDelete={(row) => setDataMedicine(dataMedicine.filter((item) => item.medicine_id !== row.medicine_id))}
                 />
             </div>
-            <Button type="submit" className="add">Adicionar</Button>
+            <Button type="button" className="add" onClick={saveRoutine}>Salvar Rotina</Button>
         </>
     );
 };
