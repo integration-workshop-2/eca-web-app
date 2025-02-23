@@ -81,8 +81,16 @@ export default function AddMedicine() {
                         </select>
                     </div>
                 </div>
-
-                <img src="logo512.png" height={250} width={250} />
+                
+                { (selectedCylinder == 0 && cylinders.length == 3) && (
+                    <img src={`cylinders/vago.png`} height="200px" />
+                ) }
+                { (selectedCylinder == 0 && cylinders.length == 0) && (
+                    <img src={`cylinders/vazio.png`} height="200px" />
+                ) }
+                { (selectedCylinder > 0 ) && (
+                    <img src={`cylinders/cylinder-${selectedCylinder}.png`} height="200px" />
+                ) }
 
                 <div className="button-group">
                     <Button onClick={handleCreateMedicine} className="update">

@@ -49,9 +49,10 @@
 }
 
 .table-container {
-    margin: 2rem auto 1rem; 
-  padding: 5rem; 
-  max-width: 90%;
+  margin: 2rem auto 1rem; /* Ajuste o espaço externo */
+  padding: 2.5rem; /* Reduzi o padding para otimizar o espaço */
+  max-width: 90%; /* Max largura para tornar o layout responsivo */
+  /* width: 100%; /* Garante que o contêiner ocupe toda a largura disponível */
   z-index: 0;
   background-color: #fff;
   border: 1px solid #ccc;

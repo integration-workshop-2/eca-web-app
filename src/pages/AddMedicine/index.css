@@ -2,20 +2,28 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .addMedicineForm .input-group {
     margin-bottom: 1vh;
+    width: 50vw;
 }
 
 .addMedicineForm .input-group select {
-    width: 23.5vw;
+    width: 100%;
     margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.addMedicineForm .input-group input {
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .addMedicineForm .button-group {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     margin-top: 2.5vh;
 }
 

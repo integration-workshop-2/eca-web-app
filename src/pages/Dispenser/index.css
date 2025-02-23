@@ -13,3 +13,11 @@
     word-wrap: break-word;
 }
   
+#dispenser-screen .table-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#dispenser-screen .table-container table {
+    margin: 0;
+}
