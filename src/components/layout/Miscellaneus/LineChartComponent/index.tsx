@@ -1,52 +1,98 @@
-import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 interface DataPoint {
   name: string;
-  uv: number;
-  pv: number;
-  amt: number;
+  value: number;
 }
-interface patientSelected {
 
+interface PatientVitals {
   id: string;
   name: string;
-  bpm: number;
-  oxygenation_percentage: number;
-  temperature: number;
+  bpm?: number[];
+  oxygenation_percentage?: number[];
+  temperature?: number[];
 }
 
-const data: DataPoint[] = [
-  { name: 'Jan', uv: 4000, pv: 2400, amt: 2400 },
-  { name: 'Fev', uv: 3000, pv: 1398, amt: 2210 },
-  { name: 'Mar', uv: 2000, pv: 9800, amt: 2290 },
-  { name: 'Abr', uv: 2780, pv: 3908, amt: 2000 },
-  { name: 'Mai', uv: 1890, pv: 4800, amt: 2181 },
-  { name: 'Jun', uv: 2390, pv: 3800, amt: 2500 },
-  { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
-];
-//<p>{id} {name}, {oxygenation_percentage}</p>
+const LineChartComponent: React.FC<{ patientId: string }> = ({ patientId }) => {
+  const [patientData, setPatientData] = useState<PatientVitals | null>(null);
 
-const LineChartComponent: React.FC<patientSelected> = ({id, name, oxygenation_percentage}) => {
+  useEffect(() => {
+    axios
+      .get(`http://seu-backend.com/list_patient_vital_signs/${patientId}`)
+      .then((response) => {
+        setPatientData(response.data);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar os sinais vitais:", error);
+      });
+  }, [patientId]);
+
+  if (!patientData || !patientData.bpm || !patientData.oxygenation_percentage || !patientData.temperature) {
+    return <p>Carregando ou sem dados disponíveis...</p>;
+  }
+
+  const formatData = (dataArray: number[] | undefined, label: string): DataPoint[] => {
+    if (!dataArray || dataArray.length === 0) {
+      return [{ name: "Sem dados", value: 0 }];
+    }
+    return dataArray.map((value, index) => ({
+      name: `${label} ${index + 1}`,
+      value,
+    }));
+  };
+
+  const bpmData = formatData(patientData.bpm, "BPM");
+  const oxygenData = formatData(patientData.oxygenation_percentage, "Oxigenação");
+  const tempData = formatData(patientData.temperature, "Temperatura");
+
   return (
-    <>
-      
-    <ResponsiveContainer width="100%" height={200}>
-    
-      <LineChart
-        data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="uv" stroke="#8884d8" activeDot={{ r: 8 }} />
-        <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
-      </LineChart>
-    </ResponsiveContainer>
-    </>
+    <div>
+      <h3>{patientData.name}</h3>
+
+      <ResponsiveContainer width="100%" height={200}>
+        <LineChart data={bpmData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="value" stroke="#ff7300" />
+        </LineChart>
+      </ResponsiveContainer>
+
+      <ResponsiveContainer width="100%" height={200}>
+        <LineChart data={oxygenData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="value" stroke="#82ca9d" />
+        </LineChart>
+      </ResponsiveContainer>
+
+      <ResponsiveContainer width="100%" height={200}>
+        <LineChart data={tempData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="value" stroke="#8884d8" />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

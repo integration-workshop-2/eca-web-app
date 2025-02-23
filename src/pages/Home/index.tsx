@@ -119,14 +119,10 @@ const Home: React.FC = () => {
         <div className="charts-group">
           {patientSelected && (
             <>
-              <LineChartComponent {...patientSelected} />
+              <LineChartComponent patientId={patientSelected.id} />
             </>
           )}
-          {patientSelected && (
-            <>
-              <LineChartComponent {...patientSelected} />
-            </>
-          )}
+          
         </div>
       </div>
       <div className="table-container">

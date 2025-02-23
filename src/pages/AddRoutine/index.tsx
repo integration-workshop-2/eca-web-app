@@ -8,6 +8,7 @@ import medicineService from "../../services/medicineService";
 import { useToast } from "../../contexts/ToastContext";
 import routineService from "../../services/routineService";
 import { useNavigate } from "react-router-dom";
+
 interface Medicine {
     medicine_id: string;
     medicine_name: string;
@@ -230,8 +231,7 @@ const AddRoutine: React.FC = () => {
                 </div>
 
                 <div className="button-group">
-                    <Button type="submit" className="add">Adicionar</Button>
-                    <Button type="button" className="delete" onClick={() => setDataMedicine([])}>Limpar</Button>
+                    <Button type="submit" className="add">Adicionar item</Button>
                 </div>
             </form>
 
