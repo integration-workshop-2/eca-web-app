@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import './index.css'
 import LineChartComponent from "../../components/layout/Miscellaneus/LineChartComponent";
 import TableHome from "../../components/layout/TableHome";
 import nonRecognizedPatientService from "../../services/nonRecognizedPatientService";
@@ -106,34 +107,37 @@ const Home: React.FC = () => {
   }));
 
   return (
-    <>
+    <div id="home-screen">
       <div className="table-container">
-        {patientSelected && (
-          <>
-            <LineChartComponent {...patientSelected} />
-          </>
-          
-        )}
-         {patientSelected && (
-          <>
-            <LineChartComponent {...patientSelected} />
-          </>
-          
-        )}
+        <span className="title">Histórico de sinais vitais</span>
         <FilterableDropdown
           options={patientsName}
           onSelect={handleSelect}
           placeholder="Pesquisar pacientes..."
           displayField="name"
         />
+        <div className="charts-group">
+          {patientSelected && (
+            <>
+              <LineChartComponent {...patientSelected} />
+            </>
+          )}
+          {patientSelected && (
+            <>
+              <LineChartComponent {...patientSelected} />
+            </>
+          )}
+        </div>
       </div>
       <div className="table-container">
+        <span className="title">Últimos alarmes</span>
         <TableHome columns={patientParameterColumns} data={dataPatientParameters} />
       </div>
       <div className="table-container">
+      <span className="title">Pacientes não reconhecidos</span>
         <TableHome columns={columnsNonRecognized} data={dataNonRecognizedWithPatientName} />
       </div>
-    </>
+    </div>
   );
 };
 

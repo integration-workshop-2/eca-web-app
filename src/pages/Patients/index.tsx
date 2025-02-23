@@ -83,7 +83,7 @@ const Patients: React.FC = () => {
     };
 
     return (
-        <div className="Home">
+        <div className="Home" id="patients-screen">
             <Button onClick={() => navigate("/addPatients")} className="add">
                 Adicionar Paciente
             </Button>
@@ -108,6 +108,7 @@ const Patients: React.FC = () => {
                 />
             )}
             <div className="table-container">
+                <span className="title">Pacientes</span>
                 <Table
                     columns={columns}
                     data={data}

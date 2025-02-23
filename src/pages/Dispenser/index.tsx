@@ -125,7 +125,7 @@ const Dispenser: React.FC = () => {
     };
 
     return (
-        <>
+        <div id="dispenser-screen">
             <Button onClick={() => handleNavigateToAddMedicine()} className="add">
                 Adicionar Remédio
             </Button>
@@ -134,6 +134,7 @@ const Dispenser: React.FC = () => {
             </Button>
 
             <div className="table-container">
+                <span className="title">Medicamentos</span>
                 <Table
                     columns={columnsMedicine}
                     data={dataMedicine}
@@ -152,6 +153,7 @@ const Dispenser: React.FC = () => {
             </div>
 
             <div className="table-container">
+                <span className="title">Rotinas</span>
                 <Table
                     columns={columnsRoutine}
                     data={dataRoutine}
@@ -197,7 +199,7 @@ const Dispenser: React.FC = () => {
                 />
             )}
 
-        </>
+        </div>
     );
 };
 
