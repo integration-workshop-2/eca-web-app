@@ -25,12 +25,13 @@ const data: DataPoint[] = [
   { name: 'Jun', uv: 2390, pv: 3800, amt: 2500 },
   { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
 ];
+//<p>{id} {name}, {oxygenation_percentage}</p>
 
 const LineChartComponent: React.FC<patientSelected> = ({id, name, oxygenation_percentage}) => {
   return (
     <>
-      <p>{id} {name}, {oxygenation_percentage}</p>
-    <ResponsiveContainer width="100%" height={250}>
+      
+    <ResponsiveContainer width="100%" height={200}>
     
       <LineChart
         data={data}

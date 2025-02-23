@@ -6,6 +6,7 @@ import Button from "../../components/layout/Miscellaneus/Buttons";
 import PopupUpdate from "../../components/layout/Miscellaneus/PopupUpdate";
 import PopupDelete from "../../components/layout/Miscellaneus/PopupDelete";
 import patientService from "../../services/patientService";
+import { useToast } from "../../contexts/ToastContext";
 
 interface User {
     id: string;
@@ -14,6 +15,7 @@ interface User {
 }
 
 const Patients: React.FC = () => {
+    const {setToastMessage, setToastType} = useToast();
     const navigate = useNavigate();
 
     const columns = [
@@ -61,7 +63,8 @@ const Patients: React.FC = () => {
         } finally {
             setIsUpdating(false);
             fetchPatients();
-            alert("Dados do paciente atualizados com sucesso!");
+            setToastType('success');
+            setToastMessage("Dados do paciente atualizados com sucesso!");
         }
     };
 
@@ -74,7 +77,8 @@ const Patients: React.FC = () => {
         } finally {
             setIsDeleting(false);
             fetchPatients();
-            alert("O paciente foi excluído!")
+            setToastType('success');
+            setToastMessage("O paciente foi excluído!")
         }
     };
 

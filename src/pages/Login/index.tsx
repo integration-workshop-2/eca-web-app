@@ -2,8 +2,10 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
+import { useToast } from "../../contexts/ToastContext";
 
 export default function Login() {
+  const {setToastMessage, setToastType} = useToast();
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -14,7 +16,8 @@ export default function Login() {
     if (isAuthenticated) {
       navigate("/");
     } else {
-      alert("Senha incorreta!");
+      setToastType('error');
+      setToastMessage("Senha incorreta!");
     }
   };
   return (

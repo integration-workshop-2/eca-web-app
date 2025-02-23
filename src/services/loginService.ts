@@ -12,5 +12,16 @@ class loginService{
             return null;
         }
     }
+
+    async updatePassword(password: string){
+        try{
+            const response = await api.put('/admin_password', {password: password});
+            return response.data; 
+        }
+        catch(error){
+            console.log('Falha ao atualizar senha.', error);
+            return null;
+        }
+    }
 }
 export default new loginService;

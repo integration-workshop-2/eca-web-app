@@ -15,7 +15,7 @@ import Toast from "../Miscellaneus/Toast";
 import { useToast } from "../../../contexts/ToastContext";
 
 const Content: React.FC = () => {
-    const { toastMessage, setToastMessage } = useToast();
+    const { toastMessage, setToastMessage, toastType } = useToast();
 
     return (
         <main className="Content">
@@ -32,6 +32,7 @@ const Content: React.FC = () => {
             {
                 (toastMessage.length > 0) ?
                 <Toast
+                    type={toastType}
                     message={toastMessage}
                     onClose={() => setToastMessage('')}/> :
                 ''
