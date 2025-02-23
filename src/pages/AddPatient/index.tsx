@@ -11,12 +11,13 @@ export default function AddPatient() {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const { setToastMessage } = useToast();
+    const { setToastMessage, setToastType } = useToast();
 
     const handleCreatePatient = useCallback(async (name: string) => {
         setLoading(true);
         try {
             await patientService.createPatient(name);
+            setToastType('success');
             setToastMessage("Dados criados com sucesso!");
             navigate('/patients');
         } catch (error) {
@@ -41,7 +42,7 @@ export default function AddPatient() {
                 <Button
                     onClick={() => handleCreatePatient(text)}
                     className="update"
-                    disabled={loading} 
+                    disabled={loading}
                 >
                     {loading ? "Carregando..." : "Adicionar Paciente"}
                 </Button>
