@@ -25,6 +25,20 @@ class routineService {
           throw error; 
       }
   }
+
+  async deleteRoutine(id: string) {
+    try {
+      const response = await api.delete(`/routines/${id}`, {
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      return response.data.data;
+    } catch (error) {
+      console.log('Erro ao deletar rotina.', error);
+      throw error; 
+    }
+  }
   
 }
 

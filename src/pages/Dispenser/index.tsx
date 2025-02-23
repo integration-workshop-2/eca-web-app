@@ -16,17 +16,22 @@ interface Medicine {
 }
 
 interface Routine {
+    routine_id: string;
     patient_id: string;
     patient_name: string;
     routine_descriptions: string[];
 }
 
 const Dispenser: React.FC = () => {
-    const { setToastMessage, setToastType } = useToast();
-    const [isUpdating, setIsUpdating] = useState<boolean>(false);
-    const [isDeleting, setIsDeleting] = useState<boolean>(false);
-    const [cylindersImage, setCylindersImage] = useState<string | undefined>();
     const navigate = useNavigate();
+    const { setToastMessage, setToastType } = useToast();
+
+    const [isUpdatingMedicine, setisUpdatingMedicine] = useState<boolean>(false);
+    const [isDeletingMedicine, setisDeletingMedicine] = useState<boolean>(false);
+    const [cylindersImage, setCylindersImage] = useState<string | undefined>();
+
+    const [isUpdatingRoutine, setisUpdatingRoutine] = useState<boolean>(false);
+    const [isDeletingRoutine, setisDeletingRoutine] = useState<boolean>(false);
 
     const handleNavigateToAddRoutine = () => {
         navigate("/addroutine");
@@ -96,6 +101,7 @@ const Dispenser: React.FC = () => {
     };
 
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
+    const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
 
     const handleUpdateMedicine = async (medicine: Medicine) => {
         try {
@@ -103,7 +109,7 @@ const Dispenser: React.FC = () => {
         } catch (error) {
             console.error('Erro ao atualizar o medicamento:', error);
         } finally {
-            setIsUpdating(false);
+            setisUpdatingMedicine(false);
             fetchMedicine();
             setToastType('success');
             setToastMessage("Dados do medicamento atualizados com sucesso!");
@@ -116,24 +122,30 @@ const Dispenser: React.FC = () => {
         } catch (error) {
             console.error('Erro ao deletar o medicamento:', error);
         } finally {
-            setIsDeleting(false);
+            setisDeletingMedicine(false);
             fetchMedicine();
             setToastType('success');
-            setToastMessage("O medicamento foi excluído!")
+            setToastMessage("O medicamento foi excluído!");
         }
     };
 
-    const handleUpdatePatient = (row: Record<string, any>) => {
-        const user = row as Routine;
+    const handleUpdateRoutine = (row: Record<string, any>) => {
+        const routine = row as Routine;
         //setSelectedRoutine(user);
         //setIsUpdating(true);
     };
 
-    const handleDeletePatient = (row: Record<string, any>) => {
-        const user = row as Routine;
-        // setSelectedRoutine(user);
-        //setIsDeleting(true);
-
+    const handleDeleteRoutine = async (r: Routine) => {
+        try {
+            await routineService.deleteRoutine(r.routine_id);
+        } catch (error) {
+            console.error('Erro ao deletar rotina:', error);
+        } finally {
+            setisDeletingRoutine(false);
+            fetchDataRoutine();
+            setToastType('success');
+            setToastMessage("A rotina foi excluída!");
+        }
     };
 
     const handleChangeImage = (m: Medicine) => {
@@ -165,13 +177,13 @@ const Dispenser: React.FC = () => {
                         const medicine = row as Medicine;
                         setSelectedMedicine(medicine);
                         fetchAvailableCylinders();
-                        setIsUpdating(true);
+                        setisUpdatingMedicine(true);
                         handleChangeImage(medicine);
                     }}
                     onDelete={(row) => {
                         const med = row as Medicine;
                         setSelectedMedicine(med);
-                        setIsDeleting(true);
+                        setisDeletingMedicine(true);
                     }}
                 />
             </div>
@@ -181,11 +193,20 @@ const Dispenser: React.FC = () => {
                 <Table
                     columns={columnsRoutine}
                     data={dataRoutine}
-                    onUpdate={handleUpdatePatient}
-                    onDelete={handleDeletePatient}
+                    onUpdate={(row) => {
+                        const routine = row as Routine;
+                        setSelectedRoutine(routine);
+                        setisUpdatingRoutine(true);
+                    }}
+                    onDelete={(row) => {
+                        const routine = row as Routine;
+                        setSelectedRoutine(routine);
+                        setisDeletingRoutine(true);
+                    }}
                 />
             </div>
-            {isUpdating && selectedMedicine && (
+
+            {isUpdatingMedicine && selectedMedicine && (
                 <PopupUpdate
                     item={selectedMedicine as Medicine}
                     title="Editar medicamento"
@@ -196,7 +217,7 @@ const Dispenser: React.FC = () => {
                         { key: "cylinder_number", label: "Cilindro", type: "select", options: availableCylinders }
                     ]}
                     onClose={() => {
-                        setIsUpdating(false);
+                        setisUpdatingMedicine(false);
                         setCylindersImage('');
                     }}
                     onUpdate={(updatedItem) => {
@@ -218,12 +239,54 @@ const Dispenser: React.FC = () => {
                 />
             )}
 
-            {isDeleting && selectedMedicine && (
+            {isDeletingMedicine && selectedMedicine && (
                 <PopupDelete
                     userId={selectedMedicine.id}
                     userName={selectedMedicine.name}
-                    onClose={() => setIsDeleting(false)}
+                    onClose={() => setisDeletingMedicine(false)}
                     onDelete={() => handleDeleteMedicine(selectedMedicine)}
+                />
+            )}
+{/*             
+            {isUpdatingRoutine && selectedRoutine && (
+                <PopupUpdate
+                    item={selectedMedicine as Medicine}
+                    title="Editar medicamento"
+                    image={cylindersImage}
+                    changeImage={handleChangeImage}
+                    fields={[
+                        { key: "name", label: "Nome", type: "text" },
+                        { key: "cylinder_number", label: "Cilindro", type: "select", options: availableCylinders }
+                    ]}
+                    onClose={() => {
+                        setisUpdatingMedicine(false);
+                        setCylindersImage('');
+                    }}
+                    onUpdate={(updatedItem) => {
+                        if (selectedMedicine) {
+                            if (updatedItem.cylinder_number === 0) {
+                                setToastType('warning');
+                                setToastMessage("Selecione um cilindro válido!");
+                                return;
+                            }
+
+                            handleUpdateMedicine({
+                                id: selectedMedicine.id,
+                                name: updatedItem.name,
+                                cylinder_number: updatedItem.cylinder_number,
+                            });
+                        }
+                    }}
+
+                />
+            )} */}
+
+            {isDeletingRoutine && selectedRoutine && (
+                <PopupDelete
+                    userId={selectedRoutine.routine_id}
+                    userName={`rotina de ${selectedRoutine.patient_name}`}
+                    onClose={() => setisDeletingRoutine(false)}
+                    onDelete={() => handleDeleteRoutine(selectedRoutine)}
                 />
             )}
 
