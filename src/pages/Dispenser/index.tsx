@@ -25,6 +25,7 @@ const Dispenser: React.FC = () => {
     const { setToastMessage, setToastType } = useToast();
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
+    const [cylindersImage, setCylindersImage] = useState<string | undefined>();
     const navigate = useNavigate();
 
     const handleNavigateToAddRoutine = () => {
@@ -135,6 +136,17 @@ const Dispenser: React.FC = () => {
 
     };
 
+    const handleChangeImage = (m: Medicine) => {
+        if(m.cylinder_number == 0 && availableCylinders.length == 3)
+            setCylindersImage('cylinders/vago.png');
+        if (m.cylinder_number == 0 && availableCylinders.length == 0)
+            setCylindersImage('cylinders/vazio.png');
+        if (m.cylinder_number > 0 )
+            setCylindersImage(`cylinders/cylinder-${m.cylinder_number}.png`);
+        else
+            setCylindersImage('');
+    };
+
     return (
         <div id="dispenser-screen">
             <Button onClick={() => handleNavigateToAddMedicine()} className="add">
@@ -154,6 +166,7 @@ const Dispenser: React.FC = () => {
                         setSelectedMedicine(medicine);
                         fetchAvailableCylinders();
                         setIsUpdating(true);
+                        handleChangeImage(medicine);
                     }}
                     onDelete={(row) => {
                         const med = row as Medicine;
@@ -176,12 +189,16 @@ const Dispenser: React.FC = () => {
                 <PopupUpdate
                     item={selectedMedicine as Medicine}
                     title="Editar medicamento"
-                    image="logo192.png"
+                    image={cylindersImage}
+                    changeImage={handleChangeImage}
                     fields={[
                         { key: "name", label: "Nome", type: "text" },
                         { key: "cylinder_number", label: "Cilindro", type: "select", options: availableCylinders }
                     ]}
-                    onClose={() => setIsUpdating(false)}
+                    onClose={() => {
+                        setIsUpdating(false);
+                        setCylindersImage('');
+                    }}
                     onUpdate={(updatedItem) => {
                         if (selectedMedicine) {
                             if (updatedItem.cylinder_number === 0) {

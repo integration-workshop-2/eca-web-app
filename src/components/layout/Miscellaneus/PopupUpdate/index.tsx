@@ -16,9 +16,10 @@ interface PopupUpdateProps<T> {
     onClose: () => void;
     onUpdate: (updatedItem: T) => void;
     image?: string;
+    changeImage?: (item: T) => void;
 }
 
-const PopupUpdate = <T,>({ item, title, fields, onClose, onUpdate, image }: PopupUpdateProps<T>) => {
+const PopupUpdate = <T,>({ item, title, fields, onClose, onUpdate, image, changeImage }: PopupUpdateProps<T>) => {
     const [updatedItem, setUpdatedItem] = useState<T>(item);
 
     const handleChange = (key: keyof T, value: string) => {
@@ -26,6 +27,12 @@ const PopupUpdate = <T,>({ item, title, fields, onClose, onUpdate, image }: Popu
             ...prevItem,
             [key]: value,
         }));
+
+        if(changeImage)
+            changeImage({
+                ...updatedItem,
+                [key]: value,
+            });
     };
 
     const handleSave = () => {
