@@ -21,7 +21,7 @@ const Content: React.FC = () => {
         <main className="Content">
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/routine_trigger" element={<PrivateRoute><RoutineTrigger /></PrivateRoute>} />
+                <Route path="/routine_trigger" element={<RoutineTrigger />} />
                 <Route path="/patients" element={<PrivateRoute><Patients /></PrivateRoute>} />
                 <Route path="/dispenser" element={<PrivateRoute><Dispenser /></PrivateRoute>} />
                 <Route path="/addroutine" element={<PrivateRoute><AddRoutine /></PrivateRoute>} />

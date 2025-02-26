@@ -230,9 +230,9 @@ const AddRoutine: React.FC = () => {
                     <input type="number" name="quantity" />
                 </div>
 
-                <div className="button-group">
-                    <Button type="submit" className="add">Adicionar item</Button>
-                </div>
+
+                <Button type="submit" className="add">Adicionar item</Button>
+
             </form>
 
             <div className="table-container">

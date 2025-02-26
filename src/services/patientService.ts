@@ -1,5 +1,5 @@
 import api from './api';
-
+import axios from 'axios';
 class patientService {
   async all() {
     try {
@@ -9,6 +9,17 @@ class patientService {
     } catch (error) {
       console.log('Falha ao retornar usuário.', error);
       return [];
+    }
+  }
+
+  async captureImage() {
+    try {
+      await axios.get('http://10.42.0.2/capture');
+
+
+    } catch (error) {
+      console.log('Falha ao capturarImage.', error);
+
     }
   }
   async createPatient(name: string) {

@@ -27,6 +27,14 @@ export default function AddPatient() {
         }
     }, [navigate, setToastMessage]);
 
+    const captureImage = async () => {
+        try {
+            const users = await patientService.captureImage();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className="table-container add-patient-form">
             <div className="input-group">
@@ -37,8 +45,20 @@ export default function AddPatient() {
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setText(e.target.value)}
                 />
             </div>
+            <div>
+                <img id="stream" src="http://10.42.0.2:81/stream" alt="Video Stream" />
+            </div>
+            <div>
+
+                <Button onClick={() => captureImage()} className="update">
+                    Salvar foto
+                </Button>
+            </div>
 
             <div className="button-group">
+
+
+
                 <Button
                     onClick={() => handleCreatePatient(text)}
                     className="update"
